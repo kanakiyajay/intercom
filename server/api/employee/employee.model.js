@@ -4,22 +4,44 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
 
-var UserSchema = new Schema({
+var EmployeeSchema = new Schema({
   name: String,
   email: { type: String, lowercase: true },
+  /**
+   * Admin: The main administer who can add employees under his account
+   * Employee: Person who can be 
+   * User: Registered on the website
+   * Customer: // use the predefined_id
+   */
   role: {
     type: String,
-    default: 'user'
+    default: 'user' // Is the 
   },
+  status: String, // Only present for emplo
+  predefined_id: String, // Should be unique for that particular website
+  // is the user for a website ??
   hashedPassword: String,
   provider: String,
-  salt: String
+  salt: String,
+  profile_pic: String,
+  created_on: String,
+  facebook_id: String,
+  twitter_id: String,
+  last_seen: Date,
+  location: {
+    country: String,
+    city: String,
+    latitude: String,
+    longitude: String
+  }
+}, {
+  timestamps: true
 });
 
 /**
  * Virtuals
  */
-UserSchema
+EmployeeSchema
   .virtual('password')
   .set(function(password) {
     this._password = password;
@@ -31,7 +53,7 @@ UserSchema
   });
 
 // Public profile information
-UserSchema
+EmployeeSchema
   .virtual('profile')
   .get(function() {
     return {
@@ -41,7 +63,7 @@ UserSchema
   });
 
 // Non-sensitive info we'll be putting in the token
-UserSchema
+EmployeeSchema
   .virtual('token')
   .get(function() {
     return {
@@ -55,21 +77,23 @@ UserSchema
  */
 
 // Validate empty email
-UserSchema
+EmployeeSchema
   .path('email')
   .validate(function(email) {
     return email.length;
   }, 'Email cannot be blank');
 
 // Validate empty password
-UserSchema
+EmployeeSchema
   .path('hashedPassword')
   .validate(function(hashedPassword) {
     return hashedPassword.length;
   }, 'Password cannot be blank');
 
-// Validate email is not taken
-UserSchema
+/**
+ * TODO: Email, Website, Predefined Id should be unique over here.
+ */
+EmployeeSchema
   .path('email')
   .validate(function(value, respond) {
     var self = this;
@@ -90,7 +114,7 @@ var validatePresenceOf = function(value) {
 /**
  * Pre-save hook
  */
-UserSchema
+EmployeeSchema
   .pre('save', function(next) {
     if (!this.isNew) return next();
 
@@ -103,7 +127,7 @@ UserSchema
 /**
  * Methods
  */
-UserSchema.methods = {
+EmployeeSchema.methods = {
   /**
    * Authenticate - check if the passwords are the same
    *
@@ -139,4 +163,4 @@ UserSchema.methods = {
   }
 };
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('Employee', EmployeeSchema);

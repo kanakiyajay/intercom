@@ -2,31 +2,31 @@
 
 var should = require('should');
 var app = require('../../app');
-var User = require('./user.model');
+var Employee = require('./user.model');
 
-var user = new User({
+var user = new Employee({
   provider: 'local',
   name: 'Fake User',
   email: 'test@test.com',
   password: 'password'
 });
 
-describe('User Model', function() {
+describe('Employee Model', function() {
   before(function(done) {
     // Clear users before testing
-    User.remove().exec().then(function() {
+    Employee.remove().exec().then(function() {
       done();
     });
   });
 
   afterEach(function(done) {
-    User.remove().exec().then(function() {
+    Employee.remove().exec().then(function() {
       done();
     });
   });
 
   it('should begin with no users', function(done) {
-    User.find({}, function(err, users) {
+    Employee.find({}, function(err, users) {
       users.should.have.length(0);
       done();
     });
@@ -34,7 +34,7 @@ describe('User Model', function() {
 
   it('should fail when saving a duplicate user', function(done) {
     user.save(function() {
-      var userDup = new User(user);
+      var userDup = new Employee(user);
       userDup.save(function(err) {
         should.exist(err);
         done();

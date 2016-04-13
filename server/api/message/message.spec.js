@@ -3,12 +3,17 @@
 var should = require('should');
 var app = require('../../app');
 var request = require('supertest');
+var Message = require('./message.model');
 
-describe('GET /api/things', function() {
+var message = {
+
+}
+
+describe('GET /api/messages', function() {
 
   it('should respond with JSON array', function(done) {
     request(app)
-      .get('/api/things')
+      .get('/api/messages')
       .expect(200)
       .expect('Content-Type', /json/)
       .end(function(err, res) {
@@ -17,4 +22,13 @@ describe('GET /api/things', function() {
         done();
       });
   });
+
+  it('should fail when trying to enter new message without a user id', function(done) {
+    done();
+  });
+
+  it('should successfully retrieve correct message', function(done) {
+    done();
+  });
+
 });

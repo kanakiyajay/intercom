@@ -1,6 +1,6 @@
 'use strict';
 
-var User = require('./user.model');
+var Employee = require('./employee.model');
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
@@ -14,7 +14,7 @@ var validationError = function(res, err) {
  * restriction: 'admin'
  */
 exports.index = function(req, res) {
-  User.find({}, '-salt -hashedPassword', function (err, users) {
+  Employee.find({}, '-salt -hashedPassword', function (err, users) {
     if(err) return res.send(500, err);
     res.json(200, users);
   });
@@ -24,7 +24,7 @@ exports.index = function(req, res) {
  * Creates a new user
  */
 exports.create = function (req, res, next) {
-  var newUser = new User(req.body);
+  var newUser = new Employee(req.body);
   newUser.provider = 'local';
   newUser.role = 'user';
   newUser.save(function(err, user) {
@@ -40,7 +40,7 @@ exports.create = function (req, res, next) {
 exports.show = function (req, res, next) {
   var userId = req.params.id;
 
-  User.findById(userId, function (err, user) {
+  Employee.findById(userId, function (err, user) {
     if (err) return next(err);
     if (!user) return res.send(401);
     res.json(user.profile);
@@ -52,7 +52,7 @@ exports.show = function (req, res, next) {
  * restriction: 'admin'
  */
 exports.destroy = function(req, res) {
-  User.findByIdAndRemove(req.params.id, function(err, user) {
+  Employee.findByIdAndRemove(req.params.id, function(err, user) {
     if(err) return res.send(500, err);
     return res.send(204);
   });
@@ -66,7 +66,7 @@ exports.changePassword = function(req, res, next) {
   var oldPass = String(req.body.oldPassword);
   var newPass = String(req.body.newPassword);
 
-  User.findById(userId, function (err, user) {
+  Employee.findById(userId, function (err, user) {
     if(user.authenticate(oldPass)) {
       user.password = newPass;
       user.save(function(err) {
@@ -84,7 +84,7 @@ exports.changePassword = function(req, res, next) {
  */
 exports.me = function(req, res, next) {
   var userId = req.user._id;
-  User.findOne({
+  Employee.findOne({
     _id: userId
   }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
     if (err) return next(err);
