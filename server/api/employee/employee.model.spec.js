@@ -2,9 +2,9 @@
 
 var should = require('should');
 var app = require('../../app');
-var Employee = require('./user.model');
+var Employee = require('./epm.model');
 
-var user = new Employee({
+var employee = new Employee({
   provider: 'local',
   name: 'Fake User',
   email: 'test@test.com',
@@ -32,9 +32,9 @@ describe('Employee Model', function() {
     });
   });
 
-  it('should fail when saving a duplicate user', function(done) {
-    user.save(function() {
-      var userDup = new Employee(user);
+  it('should fail when saving a duplicate employee', function(done) {
+    employee.save(function() {
+      var userDup = new Employee(employee);
       userDup.save(function(err) {
         should.exist(err);
         done();
@@ -43,18 +43,18 @@ describe('Employee Model', function() {
   });
 
   it('should fail when saving without an email', function(done) {
-    user.email = '';
-    user.save(function(err) {
+    employee.email = '';
+    employee.save(function(err) {
       should.exist(err);
       done();
     });
   });
 
-  it("should authenticate user if password is valid", function() {
-    return user.authenticate('password').should.be.true;
+  it("should authenticate employee if password is valid", function() {
+    return employee.authenticate('password').should.be.true;
   });
 
-  it("should not authenticate user if password is invalid", function() {
-    return user.authenticate('blah').should.not.be.true;
+  it("should not authenticate employee if password is invalid", function() {
+    return employee.authenticate('blah').should.not.be.true;
   });
 });

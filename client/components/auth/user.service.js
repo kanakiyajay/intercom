@@ -2,7 +2,7 @@
 
 angular.module('tpApp')
   .factory('User', function ($resource) {
-    return $resource('/api/users/:id/:controller', {
+    return $resource('/api/employees/:id/:controller', {
       id: '@_id'
     },
     {

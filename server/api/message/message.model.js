@@ -10,8 +10,8 @@ var MessageSchema = new Schema({
    *  How to link a message to a website for first contact ?
    *
    *********/
-  created_for: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-  created_by: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+  created_for: { type: mongoose.Schema.Types.ObjectId, ref: 'Employee'},
+  created_by: { type: mongoose.Schema.Types.ObjectId, ref: 'Employee', required: true},
   in_response_to: { type: mongoose.Schema.Types.ObjectId, ref: 'Message'},
   message: { type: String, trim: true, required: true },
   attachments: Array
