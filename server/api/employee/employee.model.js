@@ -5,29 +5,29 @@ var Schema = mongoose.Schema;
 var crypto = require('crypto');
 
 var EmployeeSchema = new Schema({
+
+  // The default things that are always required
   name: String,
   email: { type: String, lowercase: true },
-  /**
-   * Admin: The main administer who can add employees under his account
-   * Employee: Person who can be 
-   * User: Registered on the website
-   * Customer: // use the predefined_id
-   */
+
+  // TODO: This will be used later for authentication and permissions
   role: {
     type: String,
-    default: 'user' // Is the 
+    default: 'employee', // It will be admin for the first user
+    enum: ['employee', 'admin', 'operator']
   },
-  status: String, // Only present for emplo
-  predefined_id: String, // Should be unique for that particular website
-  // is the user for a website ??
+
+  // Crypto
   hashedPassword: String,
-  provider: String,
   salt: String,
+
+  // TODO: Later Google, Facebook, LInkedIn, Twitter OAuth
+  provider: String,
+
+  // Fetch from Gravatar or let user set his avatar
   profile_pic: String,
-  created_on: String,
-  facebook_id: String,
-  twitter_id: String,
-  last_seen: Date,
+
+  // Will be set from his IP / Geolocation
   location: {
     country: String,
     city: String,
