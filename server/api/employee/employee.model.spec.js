@@ -2,7 +2,7 @@
 
 var should = require('should');
 var app = require('../../app');
-var Employee = require('./epm.model');
+var Employee = require('./employee.model');
 
 var employee = new Employee({
   provider: 'local',

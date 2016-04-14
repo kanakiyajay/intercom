@@ -27,7 +27,17 @@ function isAuthenticated() {
     .use(function(req, res, next) {
       User.findById(req.user._id, function (err, user) {
         if (err) return next(err);
-        if (!user) return res.send(401);
+        if (!user) {
+
+          var error = {
+            status: 401,
+            code: 'NOT_AUTH',
+            message: 'Not Authenticated',
+            doc_link: '' // TODO
+          };
+
+          return res.json(401, error);
+        }
 
         req.user = user;
         next();
@@ -57,7 +67,7 @@ function hasRole(roleRequired) {
  * Returns a jwt token signed by the app secret
  */
 function signToken(id) {
-  return jwt.sign({ _id: id }, config.secrets.session, { expiresInMinutes: 60*5 });
+  return jwt.sign({ _id: id }, config.secrets.session, { expiresInMinutes: 60*60*5 });
 }
 
 /**

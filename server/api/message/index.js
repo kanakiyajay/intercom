@@ -6,6 +6,8 @@ var auth = require('../../auth/auth.service');
 
 var router = express.Router();
 
+// TODO: For customer a different auth will be needed which will work on web_id and web_cust_id
+
 router.get('/', auth.isAuthenticated(), controller.index);
 router.get('/:id', auth.isAuthenticated(), controller.show);
 router.post('/', auth.isAuthenticated(), controller.create);
