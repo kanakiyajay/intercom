@@ -10,7 +10,8 @@ Under development.
 
 
 ## TODO
-
+	
  - [] Websites Table
  - [] Events Table
- - [] Front-end javascript widget
+ - [] Conversations ( Above messages, similar to support requests )
+ - [] Front-end javascript widget .. Started

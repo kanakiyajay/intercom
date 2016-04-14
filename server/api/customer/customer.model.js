@@ -14,7 +14,9 @@ var CustomerSchema = new Schema({
   name: String,
   email: String,
 
-  // Track the users last active location
+  /**
+   * User Meta information from the browser
+   **/
   location: {
     lat: String,
     long: String,
@@ -22,14 +24,28 @@ var CustomerSchema = new Schema({
     city: String,
     pin: String,
   },
+  screen: {
+    width: Number,
+    height: Number
+  },
+  platform: String, // MAC / WINDOWS / LINUX / ANDROID / IOS
+  browser: String,
+  language: String,
+  timezone: String,
 
   // Should be updated everytime customer tracks
   last_active_at: Date,
+
+  // Last message given
+  last_contacted_at: Date,
   created_at: Date, // This comes from the website
 
   facebook_id: String,
   twitter_id: String,
 
+  // TODO: How to capture this ?
+  web_sessions: { type: Number, default: 0},
+  
   // Custom User Attributes in Intercom
   attributes: Object
 }, {
