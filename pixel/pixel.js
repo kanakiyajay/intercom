@@ -101,8 +101,11 @@ pixel.generator = {
   html: [
     '<div id="{0}-container" class="{0}-container">',
       '<div class="{0}-message-button">',
-        '',
-        '',
+        '<p>Icon</p>',
+      '</div>',
+      '<div class="{0}-message-container">',
+        '<div class="{0}-single-message">',
+        '</div>',
       '</div>',
     '</div>'
   ].join('').replace('{0}', pixel.constants.namespace),
@@ -122,6 +125,9 @@ pixel.conversation = {
   },
   fetch: function() {
     // Ajax Call to fetch messages
+    pixel.ajax({
+      url: 
+    })
   }
 }
 
