@@ -78,7 +78,7 @@ describe('Login should be successful', function() {
   it('GET /api/messages with limit as one', function(done) {
     request(app)
       .get('/api/messages')
-      .query({ limit: 1})
+      .query({ limit: 1, conversation_id: "56cb91bdc3464f14678934ca"})
       .set('Authorization', 'Bearer ' + token)
       .expect(200)
       .end(function(err, res) {

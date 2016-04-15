@@ -10,6 +10,7 @@
 
 'use strict';
 
+var mongoose = require('mongoose');
 var async = require('async');
 var Emp = require('../api/employee/employee.model');
 var Message = require('../api/message/message.model');
@@ -37,7 +38,8 @@ var seedJson = {
     role: 'admin',
     name: 'Admin',
     email: 'admin@admin.com',
-    password: 'admin'
+    password: 'admin',
+    conversations: [mongoose.Types.ObjectId("56cb91bdc3464f14678934ca")]
   },
   custo1: {
     web_cust_id: '123',
@@ -50,7 +52,9 @@ var seedJson = {
 
     attributes: {
       plan: 'premium'
-    }
+    },
+
+    conversations: [mongoose.Types.ObjectId("56cb91bdc3464f14678934ca")]
   },
   custo2: {
     web_cust_id: '124',
@@ -66,12 +70,14 @@ var seedJson = {
     }
   },
   mess1: {
+    conversation_id: mongoose.Types.ObjectId("56cb91bdc3464f14678934ca"),
     status: 'unread',
     message: 'Hello World 1',
     type: 'c2e',
     attachments: []
   },
   mess2: {
+    conversation_id: mongoose.Types.ObjectId("56cb91bdc3464f14678934ca"),
     status: 'unread',
     message: 'Hello World 2',
     type: 'e2c',
@@ -101,9 +107,11 @@ function populateMessages(err, results, cb) {
 
   msg1.created_for = emp._id;
   msg1.created_by = cust._id;
+  msg1.created_by_model = 'Customer';
 
   msg2.created_for = cust._id;
   msg2.created_by = emp._id;
+  msg2.created_by_model = 'Employee';
 
   Message.find({}).remove(function() {
     Message.create(msg1, msg2, function (err, message) {

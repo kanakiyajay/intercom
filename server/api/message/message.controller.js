@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var mongoose = require('mongoose');
 var Message = require('./message.model');
 var Customer = require('../customer/customer.model');
 var Employee = require('../employee/employee.model');
@@ -14,30 +15,20 @@ var defaults = {
 exports.index = function(req, res) {
 
   // TODO: Set Hard Limits over here for minima and maxima
+  // if (!req.query.conversation_id) { return; }
   var status = req.query.status || defaults.status;
   var limit = req.query.limit || defaults.limit;
   var skip = req.query.skip || defaults.skip;
   var messageFor, messageTo;
 
-  // Requesting User is an Employee
-  if (req.user.role) {
-    messageFor = 'created_for';
-    messageTo = 'created_by';
-  } else {
-    messageFor = 'created_by';
-    messageTo = 'created_for';
-  }
-
   Message
     .find({
-      created_for: req.user._id,
-      status: status
+      conversation_id: mongoose.Types.ObjectId(req.query.conversation_id)
     })
     .skip(skip)
     .limit(limit)
+    .populate('created_by')
     .sort('-createdAt')
-    .populate({ path: messageTo, model: Customer})
-    .populate({ path: messageFor, model: Employee})
     .exec(function (err, messages) {
       if(err) { return handleError(res, err); }
       return res.json(200, messages);

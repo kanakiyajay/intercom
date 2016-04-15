@@ -27,13 +27,8 @@ var EmployeeSchema = new Schema({
   // Fetch from Gravatar or let user set his avatar
   profile_pic: String,
 
-  // Will be set from his IP / Geolocation
-  location: {
-    country: String,
-    city: String,
-    latitude: String,
-    longitude: String
-  }
+  //  Will later list all the 
+  conversations: [{ type: mongoose.Schema.Types.ObjectId}]
 }, {
   timestamps: true
 });

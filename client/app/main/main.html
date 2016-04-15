@@ -4,19 +4,26 @@
   <div class="row">
     <h1> Employee Dashboard </h1>
   </div>
+  <code>
+    <p>First List Active Conversations</p>
+    <p>After Clicking on a particular conversation, messages should get loaded</p>
+    <p>Currently Putting all Messages under 1 conversation</p>
+  </code>
+  <h1 class="page-header">Messages:</h1>
   <div class="row" ng-repeat="message in messages">
     <div class="col-lg-12">
-      <h1 class="page-header">Messages:</h1>
       <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6">
         <li>{{ message.created_by.name }} | {{ message.message }}</li>
       </ul>
     </div>
+  </div>
+  <div class="row">
     <div class="col-lg-6">
       <form class="thing-form">
         <p class="input-group">
-          <input type="text" class="form-control" placeholder="Send Message to Customer" ng-model="message.reply">
+          <input type="text" class="form-control" placeholder="Send Message to Customer" ng-model="reply">
           <span class="input-group-btn">
-            <button type="submit" class="btn btn-primary" ng-click="submitNewMessage(message.reply, message.created_by._id)">Submit</button>
+            <button type="submit" class="btn btn-primary" ng-click="submitNewMessage(reply)">Submit</button>
           </span>
         </p>
       </form>

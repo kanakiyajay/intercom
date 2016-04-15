@@ -3,8 +3,9 @@
 angular.module('tpApp')
   .controller('MainCtrl', function ($scope, $http, socket) {
     $scope.messages = [];
+    $scope.reply = '';
 
-    $http.get('/api/messages').success(function(messages) {
+    $http.get('/api/messages?conversation_id=56cb91bdc3464f14678934ca').success(function(messages) {
       $scope.messages = messages;
       $scope.syncUpdates('message', $scope.messages);
     });
@@ -15,11 +16,10 @@ angular.module('tpApp')
       }
 
       $http.post('/api/messages', {
-      	message: message,
-      	created_for: cust_id
+      	message: message
       }).success(function() {
         // Reset Messages
-      	message = "";
+      	$scope.reply = '';
       });
     };
 

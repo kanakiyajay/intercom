@@ -47,7 +47,10 @@ var CustomerSchema = new Schema({
   web_sessions: { type: Number, default: 0},
   
   // Custom User Attributes in Intercom
-  attributes: Object
+  attributes: Object,
+
+  conversations: [{ type: mongoose.Schema.Types.ObjectId }]
+  // conversations: [] // Will list all conversations that an customer has had
 }, {
 	timestamps: true
 });
