@@ -2,13 +2,28 @@
 
 angular.module('tpApp')
   .controller('MainCtrl', function ($scope, $http, socket) {
-    $scope.awesomeThings = [];
+    $scope.messages = [];
 
-    $http.get('/api/messages').success(function(awesomeThings) {
-      $scope.awesomeThings = awesomeThings;
+    $http.get('/api/messages').success(function(messages) {
+      $scope.messages = messages;
+      $scope.syncUpdates('message', $scope.messages);
     });
 
-    $scope.submitNewMessage = function(message) {
-      
+    $scope.submitNewMessage = function(message, cust_id) {
+      if (!message.length) {
+        return;
+      }
+
+      $http.post('/api/messages', {
+      	message: message,
+      	created_for: cust_id
+      }).success(function() {
+        // Reset Messages
+      	message = "";
+      });
     };
+
+    $scope.$on('$destroy', function() {
+      socket.unsyncUpdates('message');
+    });
   });

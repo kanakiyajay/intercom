@@ -16,7 +16,7 @@ var MessageSchema = new Schema({
   status: { type: String, enum: ['read', 'unread', 'deleted']},
   created_for: { type: mongoose.Schema.Types.ObjectId},
   created_by: { type: mongoose.Schema.Types.ObjectId, required: true},
-  message_type: { type: String, enum: ['e2c', 'c2e', 'c2w'], required: true},
+  type: { type: String, enum: ['e2c', 'c2e', 'c2w'], required: true},
 
   // TODO: Might be required for threading
   in_response_to: { type: mongoose.Schema.Types.ObjectId, ref: 'Message'},

@@ -68,13 +68,13 @@ var seedJson = {
   mess1: {
     status: 'unread',
     message: 'Hello World 1',
-    message_type: 'c2e',
+    type: 'c2e',
     attachments: []
   },
   mess2: {
     status: 'unread',
     message: 'Hello World 2',
-    message_type: 'e2c',
+    type: 'e2c',
     attachments: []
   }
 };

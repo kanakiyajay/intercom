@@ -126,7 +126,7 @@ pixel.conversation = {
   fetch: function() {
     // Ajax Call to fetch messages
     pixel.ajax({
-      url: 
+      url: pixel.constants.base + pixel.constants.
     })
   }
 }
