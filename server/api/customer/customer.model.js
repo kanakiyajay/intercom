@@ -10,13 +10,18 @@ var mongoose = require('mongoose'),
  * @type {Schema}
  */
 var CustomerSchema = new Schema({
-  web_cust_id: String,
-  //web_id: String, // foreign key
+  client_id: String, // TODO: Should be required
+
+  // TODO: One or the other should always be present
+  cust_id: String,
+  cookie_id: String,
+
   name: String,
   email: String,
 
   /**
    * User Meta information from the browser
+   * TODO: For location use https://github.com/bluesmoon/node-geoip
    **/
   location: {
     lat: String,
@@ -25,13 +30,18 @@ var CustomerSchema = new Schema({
     city: String,
     pin: String,
   },
-  screen: {
-    width: Number,
-    height: Number
+
+  browserInfo: {
+    screenSize: String,
+    browser: String,
+    browserMajorVersion: String,
+    mobile: Boolean,
+    os: String,
+    osVersion: String,
+    language: String,
   },
-  platform: String, // MAC / WINDOWS / LINUX / ANDROID / IOS
-  browser: String,
-  language: String,
+
+  // TODO: jsTimeZoneOffset
   timezone: String,
 
   // Should be updated everytime customer tracks
@@ -55,5 +65,17 @@ var CustomerSchema = new Schema({
 }, {
 	timestamps: true
 });
+
+CustomerSchema.pre('validate', function(next) {
+  if (!this.cust_id) {
+    if (!this.cookie_id) {
+      next(Error('Cookie Id or Customer Id should be present'));
+    } else {
+      next()
+    }
+  } else {
+    next();
+  }
+})
 
 module.exports = mongoose.model('Customer', CustomerSchema);

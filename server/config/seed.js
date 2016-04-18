@@ -42,7 +42,7 @@ var seedJson = {
     conversations: [mongoose.Types.ObjectId("56cb91bdc3464f14678934ca")]
   },
   custo1: {
-    web_cust_id: '123',
+    cust_id: '123',
     name: 'Test Cust',
     email: 'cust@cust.com',
 
@@ -57,7 +57,7 @@ var seedJson = {
     conversations: [mongoose.Types.ObjectId("56cb91bdc3464f14678934ca")]
   },
   custo2: {
-    web_cust_id: '124',
+    cust_id: '124',
     name: 'Test Cust 2',
     email: 'cust2@cust.com',
 

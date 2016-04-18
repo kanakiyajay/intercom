@@ -3,9 +3,8 @@
 var _ = require('lodash');
 var Customer = require('./customer.model');
 
-// Get list of customers
-exports.index = function(req, res) {
-  Customer.find(function (err, customers) {
+exports.get = function(req, res) {
+  Customer.find(function (err, customer) {
     if(err) { return handleError(res, err); }
     return res.json(200, customers);
   });
@@ -20,6 +19,17 @@ exports.show = function(req, res) {
   });
 };
 
+// CORS is enabled in this
+// Gets the current customer based upon the params sent
+// If no customer is found, a new one is created with its own unique id
+// 
+// req.body.settings: {
+//  client_id
+//  cust_id
+//  name
+//  email
+// }
+// 
 // Creates a new customer in the DB.
 exports.create = function(req, res) {
   Customer.create(req.body, function(err, customer) {
@@ -56,4 +66,19 @@ exports.destroy = function(req, res) {
 
 function handleError(res, err) {
   return res.send(500, err);
+}
+
+function getCustomerQuery(req) {
+  var settings = req.body.settings;
+  if (settings.cust_id && settings.cust_id.length) {
+    return {
+      client_id: settings.client_id,
+      cust_id: settings.cust_id
+    }
+  } else if (req.body.cookie && req.body.cookie.length) {
+    return {
+      client_id: settings.client_id,
+      cookie_id: req.body.cookie
+    }
+  }
 }
