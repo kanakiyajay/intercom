@@ -1,8 +1,8 @@
+'use strict';
 /**
  * Namespace to hold all the code for timezone detection.
  */
 var jstz = (function () {
-    'use strict';
     var HEMISPHERE_SOUTH = 's',
 
         consts = {

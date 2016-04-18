@@ -32,10 +32,51 @@ exports.show = function(req, res) {
 // 
 // Creates a new customer in the DB.
 exports.create = function(req, res) {
-  Customer.create(req.body, function(err, customer) {
-    if(err) { return handleError(res, err); }
-    return res.json(201, customer);
-  });
+  var mQuery = getCustomerQuery(req);
+  if (mQuery) {
+    Customer.findOne(mQuery, function(err, customer) {
+      if (err) { return handleError(res, err); }
+
+      // Update BrowserInfo
+      customer.browserInfo = req.body.browserInfo;
+
+      // Update Customer Id
+      if (!customer.cust_id && req.body.settings.cust_id) {
+        customer.cust_id = req.body.settings.cust_id;
+      }
+
+      // Update Cookie Id
+      if (!customer.cookie_id && req.body.cookie) {
+        customer.cookie_id = req.body.cookie;
+      }
+
+      if (!customer.cookie_id && !req.body.cookie) {
+        customer.cookie_id = getRandomString();
+      }
+
+      // Also Update the Customer
+      customer.save(function(err, cust) {
+        if (err) { return handleError(res, err); }
+        res.json(201, customer);
+      });
+    });
+  } else {
+    var mCustomer = {
+      cookie_id: getRandomString(),
+      name: req.body.settings.name,
+      email: req.body.settings.email,
+      browserInfo: req.body.browserInfo
+    }
+
+    if (req.body.settings.cust_id) {
+      mCustomer.cust_id = req.body.settings.cust_id;
+    }
+
+    Customer.create(mCustomer, function(err, customer) {
+      if(err) { return handleError(res, err); }
+      return res.json(201, customer);
+    });
+  }
 };
 
 // Updates an existing customer in the DB.
@@ -80,5 +121,11 @@ function getCustomerQuery(req) {
       client_id: settings.client_id,
       cookie_id: req.body.cookie
     }
+  } else {
+    return false;
   }
+}
+
+function getRandomString() {
+  return Math.random().toString(36).slice(2);
 }

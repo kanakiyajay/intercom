@@ -35,7 +35,8 @@ pixel.constants = {
   },
   url: {
     base: 'http://localhost:9000/api/',
-    customer: 'customer'
+    customer: 'customers',
+    message: 'messages'
   },
   namespace: 'pixel',
   messages: {
