@@ -54,6 +54,9 @@ exports.create = function(req, res) {
         customer.cookie_id = getRandomString();
       }
 
+      // Customer user Attributes
+      _.extend(customer.attributes, req.body.settings.attributes || {});
+
       // Also Update the Customer
       customer.save(function(err, cust) {
         if (err) { return handleError(res, err); }
@@ -62,10 +65,16 @@ exports.create = function(req, res) {
     });
   } else {
     var mCustomer = {
+      client_id: req.body.settings.client_id,
       cookie_id: getRandomString(),
-      name: req.body.settings.name,
-      email: req.body.settings.email,
-      browserInfo: req.body.browserInfo
+      name: req.body.settings.name || '',
+      email: req.body.settings.email || '',
+      browserInfo: req.body.browserInfo || {},
+      attributes: req.body.settings.attributes || {}
+    }
+
+    if (!mCustomer.client_id) {
+      return handleError(res, Error('No Client Id present'));
     }
 
     if (req.body.settings.cust_id) {

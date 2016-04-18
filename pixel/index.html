@@ -3,8 +3,105 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Demo for Javascript Pixel Contact Form</title>
+
+	<style type="text/css">
+		#pixel-container {
+			position: fixed;
+			z-index: 10000;
+		}
+
+		#pixel-container #pixel-launcher {
+			position: fixed;
+			bottom: 10px;
+			right: 20px;
+			width: 48px;
+			height: 48px;
+		}
+	
+		#pixel-container #pixel-message-button {
+			border-radius: 50%;
+			bottom: 0;
+			right: 0;
+			height: 48px;
+			width: 48px;
+			background-color: #d2504d;
+			border-color: #aa2825;
+			background-image: url(https://js.intercomcdn.com/images/icon-launcher-acquire.8a742481.png);
+			background-size: 26px 25px;
+			background-repeat: no-repeat;
+			box-shadow: 0 6px 13px 0 rgba(0,0,0,.23);
+			background-position: 50%;
+		}
+	
+		#pixel-container #pixel-conversion-container {
+			position: fixed;
+			z-index: 10000;
+			right: 0;
+			bottom: 0;
+			width: 368px;
+			height: 100%;
+		}
+
+		#pixel-container #pixel-conversation-all {
+			display: none; /* TODO: Later All Conversions */
+		}
+
+		#pixel-container #pixel-single-conversation {
+
+		}
+
+		#pixel-container .pixel-bar-header {
+			background: white;
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 100%;
+			height: 48px;
+			z-index: 10000;
+			overflow: hidden;
+		}
+	</style>
 </head>
 <body>
+	<h1>Development Pixel</h1>
+
+	<div id="pixel-container">
+		<div id="pixel-launcher">
+			<div id="pixel-message-button">
+				<div id="pixel-initials"></div>
+			</div>
+		</div>
+		<div id="pixel-conversion-container">
+			<div id="pixel-conversation-all">
+				<div id="pixel-conversation-header" class="pixel-bar-header">
+					.... X
+				</div>
+				<div id="pixel-conversation-list" class="pixel-bar-body">
+					<ul>
+						<li>Hello</li>
+						<li>World</li>
+						<li>There</li>
+					</ul>
+				</div>
+				<div id="pixel-conversation-footer" class="pixel-bar-footer">
+					<button>Add new Conversation</button>
+				</div>
+			</div>
+			<div id="pixel-single-conversation">
+				<div class="pixel-bar-header">
+					= new conversation  -  X 
+				</div>
+				<div class="pixel-bar-body">
+					<div class="pixel-pre-message"></div>
+				</div>
+				<div class="pixel-bar-footer">
+					<input type="text">
+					<button>&gt;</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<script type="text/javascript">
 		window.pixelSettings = {
 			client_id: 'abcdef', // TODO: After Websites Table

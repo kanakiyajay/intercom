@@ -85,6 +85,21 @@ pixel.logger = function(msg, bool, track) {
  }
 }
 
+// Creates A Fragment of html to be inserted
+pixel.createFrag = function(htmlStr) {
+  var frag = document.createDocumentFragment(),
+      temp = document.createElement('div');
+  temp.innerHTML = htmlStr;
+  while (temp.firstChild) {
+      frag.appendChild(temp.firstChild);
+  }
+  return frag;
+}
+
+pixel.insertAfterBody = function(htmlStr) {
+ document.body.insertAdjacentHTML('afterbegin', htmlStr);
+}
+
 pixel.cookie = monster;
 
 // TODO: https://github.com/keithws/browser-report/blob/master/index.js
@@ -288,7 +303,7 @@ pixel.browserInfo = pixel.getClientDetails();
 
 pixel.ajax = aja;
 
-pixel.init = function() {
+pixel.initCust = function() {
   var settings = window.pixelSettings;
   var postCust = pixel.constants.url.base + pixel.constants.url.customer
   var pixelUser = pixel.cookie.get(pixel.constants.cookie.id);
@@ -310,41 +325,69 @@ pixel.init = function() {
     .go();
 }
 
+pixel.init = function() {
+  pixel.initTemplate();
+  pixel.initCust();
+}
+
 
 pixel.identify = function(res) {
+  var conv = res.conversations;
+  // Once the the User is identified get its conversations
   console.log(res);
 }
 
- /**********************
- *** HTML AND CSS GENERATION ****
- **********************/
+ /******************************
+ *** HTML AND CSS GENERATION ***
+ *******************************/
+ // TODO: Shift this to a different html and css
+ 
 pixel.generator = {
   html: [
     '<div id="{0}-container" class="{0}-container">',
       '<div class="{0}-message-button">',
-        '<p>Icon</p>',
+        '<div class="{0}-initials"></div>',
       '</div>',
+      '<div class="{0}-badge"></div>',
       '<div class="{0}-message-container">',
         '<div class="{0}-single-message">',
         '</div>',
       '</div>',
     '</div>'
-  ].join('').replace('{0}', pixel.constants.namespace),
-
+  ].join('').replace(/\{0\}/g, pixel.constants.namespace),
   css: [
-
-  ].join('')
+    // TODO
+  ].join('').replace(/\{0\}/g, pixel.constants.namespace)
 }
 
  /**********************
  ***** CONVERSATION MODULE ****
  **********************/
 
+pixel.initTemplate = function() {
+  var head = document.head || document.getElementByTagName('head')[0];
+  var style = document.createElement('style');
+  style.type = 'text/css';
+
+  if (style.styleSheet) {
+    style.styleSheet.cssText = pixel.generator.css;
+  } else {
+    style.appendChild(document.createTextNode(pixel.generator.css));
+  }
+
+  // Insert the styles
+  // head.appendChild(style);
+
+  // Insert the Template
+  // pixel.insertAfterBody(pixel.generator.html);
+}
+
 pixel.conversation = {
   reply: function() {
-    
+    // POST /api/messages
   },
   fetch: function() {
+    // GET /api/messages
   }
 }
 
