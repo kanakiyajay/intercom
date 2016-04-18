@@ -3,8 +3,8 @@
 /**
  * Pixel.js, js file to be inserted for every client
  *   Dependent upon:
- *     ajax.js | Simple jQuery Ajax Wrapper
- *     transition.js | Simple Animation function
+ *     ajax.js | https://github.com/ForbesLindesay/ajax
+ *     cookie-monster.js | https://github.com/jgallen23/cookie-monster
  *
  * 
  * Following has been distributed in below Modules
@@ -30,11 +30,19 @@
 
 var pixel = pixel || {};
 pixel.constants = {
+  cookie: {
+    id: '__PIXEL_USER'
+  },
+  url: {
+    base: 'http://localhost:9000/api/',
+    customer: 'customer'
+  },
   namespace: 'pixel',
   messages: {
     noSettings: 'Please read the docs and install pixel tracker again',
     noClientId: 'Please make sure that you have enable client id and you have the correct clientId',
-    noUserId: 'No user id has been installed'
+    noUserId: 'No user id has been installed',
+    getCustFailed: 'Get Customer Called failed',
   }
 }
 
@@ -76,6 +84,8 @@ pixel.logger = function(msg, bool, track) {
  }
 }
 
+
+pixel.cookie = monster;
  // TODO
 
  /*************************
@@ -92,6 +102,30 @@ pixel.ajax = ajax;
 
 pixel.init = function() {
   var settings = window.pixelSettings;
+  var getUser = pixel.constants.url.base + pixel.constants.url.customer
+  var pixelUser = pixel.cookie.get(pixel.constants.cookie.id);
+
+  // Always send cookie header
+  pixel
+    .ajax({
+      url: getUser,
+      method: 'post',
+      dataType: 'json',
+      jsonp: false,
+      data: {
+        settings: settings,
+        cookie: pixelUser
+      },
+      success: pixel.identify,
+      error: function(err, res) {
+       pixel.logger(pixel.constants.messages.getCustFailed + ' '  + err, true);
+      }
+    });
+}
+
+
+pixel.identify = function(res) {
+  console.log(res);
 }
 
  /**********************
@@ -124,10 +158,6 @@ pixel.conversation = {
     
   },
   fetch: function() {
-    // Ajax Call to fetch messages
-    pixel.ajax({
-      url: pixel.constants.base + pixel.constants.
-    })
   }
 }
 

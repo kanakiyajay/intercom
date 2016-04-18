@@ -6,6 +6,7 @@ var mongoose = require('mongoose'),
 /**
  * Customers which are going to be tracked
  * In this website id and website customer id should be unique together
+ * Also add cookie tracking id
  * @type {Schema}
  */
 var CustomerSchema = new Schema({
@@ -44,7 +45,7 @@ var CustomerSchema = new Schema({
   twitter_id: String,
 
   // TODO: How to capture this ?
-  web_sessions: { type: Number, default: 0},
+  web_sessions: { type: Number, default: 1},
   
   // Custom User Attributes in Intercom
   attributes: Object,
