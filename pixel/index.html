@@ -3,7 +3,16 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Demo for Javascript Pixel Contact Form</title>
+	
+	<style type="text/css">
+		.float-left {
+			float: left;
+		}
 
+		.float-right {
+			float: right;
+		}
+	</style>
 	<style type="text/css">
 		#pixel-container {
 			position: fixed;
@@ -50,6 +59,21 @@
 
 		}
 
+		#pixel-container .pixel-bar-heading {
+		    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+		    font-size: 15px;
+		    line-height: 48px;
+		    font-weight: 500;
+		    color: #465c66;
+		    letter-spacing: .2px;
+		    display: inline-block;
+		    max-width: 200px;
+		    white-space: nowrap;
+		    overflow: hidden;
+		    text-overflow: ellipsis;
+			margin: 0;
+		}
+
 		#pixel-container .pixel-bar-header {
 			background: white;
 			position: absolute;
@@ -58,7 +82,68 @@
 			width: 100%;
 			height: 48px;
 			z-index: 10000;
+			text-align: center;
 			overflow: hidden;
+			box-shadow: 0 1px 2px 0 rgba(0,0,0,.12);
+		}
+	
+		.pixel-bar-heading-icons {
+			position: relative;
+			height: 100%;
+			margin: 0 20px;
+		}
+
+		#pixel-container .pixel-bar-heading-icon {
+			height: 100%;
+			cursor: pointer;
+			width: 16px;
+			display: inline-block;
+			background-position: 50%;
+		    opacity: .4;
+		}
+
+		#pixel-container .pixel-minimize {
+		    background-image: url(https://js.intercomcdn.com/images/icon-minimize.d9de03dd.png);
+    		background-size: 15px 15px;
+		    background-repeat: no-repeat;
+		    margin-right: 6px;
+		}
+
+		#pixel-container .pixel-menu {
+		    background-image: url(https://js.intercomcdn.com/images/icon-conversations.6e0b2a74.png);
+    		background-size: 15px 12px;
+    		background-repeat: no-repeat;
+		}
+
+		#pixel-container .pixel-close  {
+		    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAq0lEQVR42o2RMQoCMRBFcwQ776C11upOekHEnaC47sQbWomIlWfRSm+wZiBFIAzfgYEw/PeKfLdYdyNiuSz5OHV/TLM9TTSvnPMsVx/ikPadBQh8aZ6C3Fyz62bp8SkFEOT4XQWZ670SaBCCeWwBBm0Bcb+xQSwYEFgLOO5L2LdyAEj9ObpGC7gOavuz0QLu0WoBgqhGCEJBOtwBWAly/qG1jInlWYJIoHnlfhcTzX2HEVUjAAAAAElFTkSuQmCC);
+		    background-size: 13px 13px;
+		    background-repeat: no-repeat;
+		}
+
+		#pixel-container .pixel-bar-body {
+			position: absolute;
+			top: 48px;
+			bottom: 48px;
+			width: 100%;
+			overflow-y: auto;
+			overflow-x: hidden;
+		}
+
+		#pixel-container .pixel-pre-message {
+			padding: 16px 16px 0;
+		}
+	
+		#pixel-conversations-body {
+			padding: 15px;
+		}
+
+		#pixel-container .pixel-bar-footer {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			margin: 0 auto;
+			padding: 8px 6px 0;
 		}
 	</style>
 </head>
@@ -74,13 +159,16 @@
 		<div id="pixel-conversion-container">
 			<div id="pixel-conversation-all">
 				<div id="pixel-conversation-header" class="pixel-bar-header">
-					.... X
+					<div class="pixel-bar-heading-icon pixel-menu"></div>
+					<p class="pixel-bar-heading"></p>
+					<div class="pixel-bar-heading-icon pixel-minimize"></div>
+					<div class="pixel-bar-heading-icon pixel-close"></div>
 				</div>
 				<div id="pixel-conversation-list" class="pixel-bar-body">
-					<ul>
-						<li>Hello</li>
-						<li>World</li>
-						<li>There</li>
+					<ul class="pixel-bar-list">
+						<li>
+							Hello
+						</li>
 					</ul>
 				</div>
 				<div id="pixel-conversation-footer" class="pixel-bar-footer">
@@ -89,10 +177,22 @@
 			</div>
 			<div id="pixel-single-conversation">
 				<div class="pixel-bar-header">
-					= new conversation  -  X 
+					<div class="pixel-bar-heading-icons float-left">
+						<div class="pixel-bar-heading-icon pixel-menu"></div>
+					</div>
+					<p class="pixel-bar-heading">
+						Krishna Air Team
+					</p>
+					<div class="pixel-bar-heading-icons float-right">
+						<div class="pixel-bar-heading-icon pixel-minimize"></div>
+						<div class="pixel-bar-heading-icon pixel-close"></div>
+					</div>
 				</div>
 				<div class="pixel-bar-body">
 					<div class="pixel-pre-message"></div>
+					<div id="pixel-conversations-body">
+						
+					</div>
 				</div>
 				<div class="pixel-bar-footer">
 					<input type="text">
