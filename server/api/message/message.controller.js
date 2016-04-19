@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 var Message = require('./message.model');
 var Customer = require('../customer/customer.model');
 var Employee = require('../employee/employee.model');
+var Conversation = require('../conversation/conversation.model');
 var defaults = {
   skip: 0,
   limit: 10,

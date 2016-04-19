@@ -13,10 +13,9 @@ var mongoose = require('mongoose'),
  *    
  *********/
 var MessageSchema = new Schema({
-  conversation_id: { type: mongoose.Schema.Types.ObjectId },
-  status: { type: String, enum: ['read', 'unread', 'deleted']},
-  created_for: { type: mongoose.Schema.Types.ObjectId}, //website id
-  created_by_model: String,
+  conversation_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Conversation', index: true},
+  status: { type: String, enum: ['read', 'unread', 'deleted'], required: true},
+  created_by_model: { type: String, required: true}, // Required for dynamic refs
   created_by: { type: mongoose.Schema.Types.ObjectId, required: true, refPath: 'created_by_model'},
   type: { type: String, enum: ['e2c', 'c2e', 'c2w'], required: true},
 
@@ -26,7 +25,7 @@ var MessageSchema = new Schema({
   // TODO: Using this later in order to attach pics, pdfs, etc
   attachments: Array
 }, {
-  timestampes: true
+  timestamps: true
 });
 
 

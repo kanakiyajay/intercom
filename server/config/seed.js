@@ -15,11 +15,13 @@ var async = require('async');
 var Emp = require('../api/employee/employee.model');
 var Message = require('../api/message/message.model');
 var Customer = require('../api/customer/customer.model');
+var Conversation = require('../api/conversation/conversation.model');
 
 function init(cb) {
   async.parallel([
     populateCustomers,
-    populateEmployees
+    populateEmployees,
+    populateConversations
   ], function(err, results) {
     populateMessages(err, results, cb);
   });
@@ -39,7 +41,7 @@ var seedJson = {
     name: 'Admin',
     email: 'admin@admin.com',
     password: 'admin',
-    conversations: [mongoose.Types.ObjectId("56cb91bdc3464f14678934ca")]
+    conversations: []
   },
   custo1: {
     client_id: 'abcdef',
@@ -55,7 +57,7 @@ var seedJson = {
       plan: 'premium'
     },
 
-    conversations: [mongoose.Types.ObjectId("56cb91bdc3464f14678934ca")]
+    conversations: []
   },
   custo2: {
     client_id: 'abcdef',
@@ -71,17 +73,15 @@ var seedJson = {
       plan: 'basic'
     },
 
-    conversations: [mongoose.Types.ObjectId("56cb91bdc3464f14678934ca")]
+    conversations: []
   },
   mess1: {
-    conversation_id: mongoose.Types.ObjectId("56cb91bdc3464f14678934ca"),
     status: 'unread',
     message: 'Hello World 1',
     type: 'c2e',
     attachments: []
   },
   mess2: {
-    conversation_id: mongoose.Types.ObjectId("56cb91bdc3464f14678934ca"),
     status: 'unread',
     message: 'Hello World 2',
     type: 'e2c',
@@ -101,31 +101,52 @@ function populateCustomers(cb) {
   });
 }
 
+function populateConversations(cb) {
+  Conversation.find({}).remove(function() {
+    Conversation.create({}, cb);
+  });
+}
+
 function populateMessages(err, results, cb) {
   if (err) { console.error(err); }
   var cust = results[0][0];
   var emp = results[1][1];
+  var conv = results[2];
 
   var msg1 = seedJson.mess1;
   var msg2 = seedJson.mess2;
 
   msg1.created_for = emp._id;
   msg1.created_by = cust._id;
+  msg1.conversation_id = conv._id;
   msg1.created_by_model = 'Customer';
 
   msg2.created_for = cust._id;
   msg2.created_by = emp._id;
+  msg2.conversation_id = conv._id;
   msg2.created_by_model = 'Employee';
 
   Message.find({}).remove(function() {
-    Message.create(msg1, msg2, function (err, message) {
+    Message.create(msg1, msg2, function (err, message, message2) {
       if (err) { console.error(err); }
-      console.log('Finished populating Employees');
-      console.log('Finished populating Customers');
-      console.log('Finished populating messages');
-      if (typeof(cb) === 'function') cb();
+
+      conv.stakeholders = [ { kind: 'Employee', item: emp._id}, { kind: 'Customer', item: cust._id} ];
+
+      conv.messages = [message._id, message._id];
+      conv.last_message = message._id;
+      conv.save(function(err, conv) {
+        console.log('Finished populating Employees');
+        console.log('Finished populating Customers');
+        console.log('Finished populating messages');
+        console.log('Finished populating Conversations');
+        if (typeof(cb) === 'function') cb();
+      });
     });
   });
+}
+
+function completeSeeding(err, cb) {
+  // body...
 }
 
 module.exports = {

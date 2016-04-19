@@ -28,7 +28,7 @@ var EmployeeSchema = new Schema({
   profile_pic: String,
 
   //  Will later list all the 
-  conversations: [{ type: mongoose.Schema.Types.ObjectId}]
+  conversations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Conversation'}]
 }, {
   timestamps: true
 });
