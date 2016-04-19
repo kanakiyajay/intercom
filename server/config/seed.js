@@ -42,6 +42,7 @@ var seedJson = {
     conversations: [mongoose.Types.ObjectId("56cb91bdc3464f14678934ca")]
   },
   custo1: {
+    client_id: 'abcdef',
     cust_id: '123',
     name: 'Test Cust',
     email: 'cust@cust.com',
@@ -57,6 +58,7 @@ var seedJson = {
     conversations: [mongoose.Types.ObjectId("56cb91bdc3464f14678934ca")]
   },
   custo2: {
+    client_id: 'abcdef',
     cust_id: '124',
     name: 'Test Cust 2',
     email: 'cust2@cust.com',
@@ -67,7 +69,9 @@ var seedJson = {
 
     attributes: {
       plan: 'basic'
-    }
+    },
+
+    conversations: [mongoose.Types.ObjectId("56cb91bdc3464f14678934ca")]
   },
   mess1: {
     conversation_id: mongoose.Types.ObjectId("56cb91bdc3464f14678934ca"),

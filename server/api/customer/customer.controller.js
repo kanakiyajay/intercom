@@ -30,13 +30,19 @@ exports.show = function(req, res) {
 //  email
 // }
 // 
-// Creates a new customer in the DB.
+// Creates or return a customer in the DB.
 exports.create = function(req, res) {
   var mQuery = getCustomerQuery(req);
+  console.log('mQuery', mQuery);
   if (mQuery) {
+    // TODO: ALso populate conversions
     Customer.findOne(mQuery, function(err, customer) {
       if (err) { return handleError(res, err); }
 
+      if (!customer) {
+        handleCustomer(req, res);
+        return;
+      }
       // Update BrowserInfo
       customer.browserInfo = req.body.browserInfo;
 
@@ -64,27 +70,7 @@ exports.create = function(req, res) {
       });
     });
   } else {
-    var mCustomer = {
-      client_id: req.body.settings.client_id,
-      cookie_id: getRandomString(),
-      name: req.body.settings.name || '',
-      email: req.body.settings.email || '',
-      browserInfo: req.body.browserInfo || {},
-      attributes: req.body.settings.attributes || {}
-    }
-
-    if (!mCustomer.client_id) {
-      return handleError(res, Error('No Client Id present'));
-    }
-
-    if (req.body.settings.cust_id) {
-      mCustomer.cust_id = req.body.settings.cust_id;
-    }
-
-    Customer.create(mCustomer, function(err, customer) {
-      if(err) { return handleError(res, err); }
-      return res.json(201, customer);
-    });
+    handleCustomer(req, res);
   }
 };
 
@@ -137,4 +123,29 @@ function getCustomerQuery(req) {
 
 function getRandomString() {
   return Math.random().toString(36).slice(2);
+}
+
+function handleCustomer(req, res) {
+  console.log('Create a new Customer');
+  var mCustomer = {
+    client_id: req.body.settings.client_id,
+    cookie_id: getRandomString(),
+    name: req.body.settings.name || '',
+    email: req.body.settings.email || '',
+    browserInfo: req.body.browserInfo || {},
+    attributes: req.body.settings.attributes || {}
+  }
+
+  if (!mCustomer.client_id) {
+    return handleError(res, Error('No Client Id present'));
+  }
+
+  if (req.body.settings.cust_id) {
+    mCustomer.cust_id = req.body.settings.cust_id;
+  }
+
+  Customer.create(mCustomer, function(err, customer) {
+    if(err) { return handleError(res, err); }
+    return res.json(201, customer);
+  });
 }
