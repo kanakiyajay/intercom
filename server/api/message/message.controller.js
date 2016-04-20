@@ -8,8 +8,7 @@ var Employee = require('../employee/employee.model');
 var Conversation = require('../conversation/conversation.model');
 var defaults = {
   skip: 0,
-  limit: 10,
-  status: 'unread'
+  limit: 10
 };
 
 // Get list of messages sorted in reverse chronology
@@ -17,10 +16,8 @@ exports.index = function(req, res) {
 
   // TODO: Set Hard Limits over here for minima and maxima
   // if (!req.query.conversation_id) { return; }
-  var status = req.query.status || defaults.status;
-  var limit = req.query.limit || defaults.limit;
-  var skip = req.query.skip || defaults.skip;
-  var messageFor, messageTo;
+  var limit = parseInt(req.query.limit) || defaults.limit;
+  var skip = parseInt(req.query.skip) || defaults.skip;
 
   Message
     .find({
@@ -46,13 +43,16 @@ exports.show = function(req, res) {
 };
 
 // Creates a new message in the DB.
+// TODO: Create a new conversation if not one present
 exports.create = function(req, res) {
   var user = req.user;
+  /*
   if (!req.body.created_for) {
     return res.json(500, { error: 'No Created For specified'});
-  }
+  }*/
 
   var message = {
+    conversation_id: req.body.conversation_id,
     message: req.body.message,
     attachments: [],
     created_by: user._id,

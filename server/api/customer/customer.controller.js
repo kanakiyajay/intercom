@@ -36,7 +36,7 @@ exports.create = function(req, res) {
   console.log('mQuery', mQuery);
   if (mQuery) {
     // TODO: ALso populate conversions
-    Customer.findOne(mQuery, function(err, customer) {
+    Customer.findOne(mQuery).populate('conversations').exec(function(err, customer) {
       if (err) { return handleError(res, err); }
 
       if (!customer) {

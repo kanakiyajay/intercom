@@ -127,26 +127,22 @@ function populateMessages(err, results, cb) {
   msg2.created_by_model = 'Employee';
 
   Message.find({}).remove(function() {
-    Message.create(msg1, msg2, function (err, message, message2) {
+    Message.create(msg1, msg2, function (err) {
       if (err) { console.error(err); }
-
-      conv.stakeholders = [ { kind: 'Employee', item: emp._id}, { kind: 'Customer', item: cust._id} ];
-
-      conv.messages = [message._id, message._id];
-      conv.last_message = message._id;
-      conv.save(function(err, conv) {
         console.log('Finished populating Employees');
         console.log('Finished populating Customers');
         console.log('Finished populating messages');
-        console.log('Finished populating Conversations');
-        if (typeof(cb) === 'function') cb();
-      });
+        console.log('Finished populating Conversations');        
+        populateEmployee(conv, cb)
     });
   });
 }
 
-function completeSeeding(err, cb) {
-  // body...
+function populateEmployee(conv, cb) {
+  Emp.find({}, function(err, emp) {
+    emp[1].conversations.push(conv._id);
+    emp[1].save(cb);
+  });
 }
 
 module.exports = {

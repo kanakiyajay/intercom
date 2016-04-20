@@ -5,6 +5,7 @@ var app = require('../../app');
 var request = require('supertest');
 var Message = require('./message.model');
 var Customer = require('../customer/customer.model');
+var Conversation = require('../conversation/conversation.model');
 var populate = require('../../config/seed');
 var seed = populate.seed;
 
@@ -43,7 +44,7 @@ describe('Checking /api/messages for Employees', function() {
 
 });
 
-describe('Login should be successful', function() {
+describe('Checking all API with Authentication', function() {
     
   var user = {
     email: seed.emplo2.email,
@@ -51,12 +52,18 @@ describe('Login should be successful', function() {
   };
 
   var token;
+  var conversation;
 
   console.log('Initiating Seed Database');
+
   before(function(done) {
     populate.init(function() {
       console.log('Seed Database finished loading');
-      done();
+      Conversation.findOne().exec(function(err, conv) {
+        console.log('Finished Quering for a conversation');
+        conversation = conv;
+        done();
+      });
     });
   });  
 
@@ -78,7 +85,7 @@ describe('Login should be successful', function() {
   it('GET /api/messages with limit as one', function(done) {
     request(app)
       .get('/api/messages')
-      .query({ limit: 1, conversation_id: "56cb91bdc3464f14678934ca"})
+      .query({ limit: 1, conversation_id: conversation.id})
       .set('Authorization', 'Bearer ' + token)
       .expect(200)
       .end(function(err, res) {
@@ -90,25 +97,30 @@ describe('Login should be successful', function() {
   });
 
   it('POST /api/messages with authentication', function(done) {
-    Customer.findOne().exec(function(err, customer) {
-      if (err) return done(err);      
-      var message = {
-        message: 'Hello World 3',
-        created_for: customer._id
-      };
+      Customer.findOne().exec(function(err, customer) {
+        if (err) return done(err);      
+        var message = {
+          conversation_id: conversation._id,
+          message: 'Hello World 3',
+          created_for: customer._id,
+          created_by_model: "Employee",
+          type: 'e2c'
+        };
 
-      request(app)
-        .post('/api/messages')
-        .set('Authorization', 'Bearer ' + token)
-        .send(message)
-        .expect(201)
-        .expect('Content-Type', /json/)
-        .end(function(err, res) {
-          if (err) return done(err);
-          res.body.message.should.be.equal(message.message);
-          done();
-        });
-    });
+        request(app)
+          .post('/api/messages')
+          .set('Authorization', 'Bearer ' + token)
+          .send(message)
+          .expect(201)
+          .expect('Content-Type', /json/)
+          .end(function(err, res) {
+            console.log("RESPONSE", res);
+            if (err) return done(err);
+            res.body.message.should.be.equal(message.message);
+            done();
+          });
+      });
+
   });
 
 });

@@ -1,29 +1,32 @@
 'use strict';
 
 angular.module('tpApp')
-  .controller('MainCtrl', function ($scope, $http, socket) {
-    $scope.messages = [];
-    $scope.reply = '';
+  .controller('MainCtrl', function ($scope, $http, Auth, Conversation, Message) {
+    var user = Auth.getCurrentUser();
+    if (!user.$promise) return;
 
-    $http.get('/api/messages?conversation_id=56cb91bdc3464f14678934ca').success(function(messages) {
-      $scope.messages = messages;
-      $scope.syncUpdates('message', $scope.messages);
-    });
+    $scope.refresh = function() {
+      user.$promise.then(function(user) {
+        $scope.currentUser = user;
+        Conversation.getConv({
+          conversations: user.conversations
+        }).$promise.then(function(resp) {
+          $scope.conversations = resp;
+        })
+      });
+    }
 
-    $scope.submitNewMessage = function(message, cust_id) {
-      if (!message.length) {
-        return;
-      }
-
-      $http.post('/api/messages', {
-      	message: message
-      }).success(function() {
-        // Reset Messages
-      	$scope.reply = '';
+    $scope.submitNewMessage = function(conv_id, mesg) {
+      // Apply Validations over here
+      Message.send({
+        conversation_id: conv_id,
+        message: mesg,        
+        created_by_model: 'Employee',
+        type: 'e2c'
+      }).$promise.then(function(res) {
+        $scope.refresh();
+      }, function(error) {
+        console.error(error);
       });
     };
-
-    $scope.$on('$destroy', function() {
-      socket.unsyncUpdates('message');
-    });
   });

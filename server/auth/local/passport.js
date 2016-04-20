@@ -9,7 +9,7 @@ exports.setup = function (User, config) {
     function(email, password, done) {
       User.findOne({
         email: email.toLowerCase()
-      }, function(err, user) {
+      }).populate('conversations').exec(function(err, user) {
         if (err) return done(err);
 
         if (!user) {
