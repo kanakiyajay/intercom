@@ -3,9 +3,8 @@
 angular.module('tpApp')
   .controller('MainCtrl', function ($scope, $http, Auth, Conversation, Message) {
     var user = Auth.getCurrentUser();
-    if (!user.$promise) return;
-
     $scope.refresh = function() {
+      if (!user.$promise) { return;}
       user.$promise.then(function(user) {
         $scope.currentUser = user;
         Conversation.getConv({

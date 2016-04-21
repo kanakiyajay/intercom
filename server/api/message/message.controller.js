@@ -99,3 +99,24 @@ exports.destroy = function(req, res) {
 function handleError(res, err) {
   return res.send(500, err);
 }
+
+
+// TODO: Apply a lot of Secrecy over here
+exports.indexCustomer = function(req, res) {
+  // TODO: Check whether correct customer
+  var limit = parseInt(req.query.limit) || defaults.limit;
+  var skip = parseInt(req.query.skip) || defaults.skip;
+
+  Message
+    .find({
+      conversation_id: mongoose.Types.ObjectId(req.query.conversation_id)
+    })
+    .skip(skip)
+    .limit(limit)
+    .populate('created_by')
+    .sort('-createdAt')
+    .exec(function (err, messages) {
+      if(err) { return handleError(res, err); }
+      return res.json(200, messages);
+    });
+}

@@ -5,7 +5,8 @@ angular.module('tpApp')
     var currentUser = {};
     if($cookieStore.get('token')) {
       currentUser = User.get();
-      
+    } else {
+      $location.path('/login');
     }
 
     return {

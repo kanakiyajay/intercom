@@ -3,18 +3,14 @@
 /**
  * Pixel.js, js file to be inserted for every client
  *   Dependent upon:
- *     aja.js | https://github.com/krampstudio/aja.js
- *     cookie-monster.js | https://github.com/jgallen23/cookie-monster
- *     http://stackoverflow.com/questions/9514179/how-to-find-the-operating-system-version-using-javascript
- *  
+ *     zepto.js | Main Lib | http://zeptojs.com/
+ *     cookie-monster.js | Cookie Manipulation | https://github.com/jgallen23/cookie-monster
+ *     tmpl.js | Templating | https://github.com/blueimp/JavaScript-Templates
+ *     
  * Following has been distributed in below Modules
  * 
  *   - Inbuilt Core Wrappers
- *     - Constants
- *     - Textfield Emoticons
- *     - Attachments
- *     - Ajax and Socket.io settings
- *     - DOM Manipulation Methods
+ *     - and Socket.io settings
  *     
  *   - PixelSettings
  *   
@@ -39,13 +35,28 @@ pixel.constants = {
     message: 'messages'
   },
   namespace: 'pixel',
+  ids: {
+    launcher: 'pixel-launcher',
+    container: {
+      main: 'pixel-container',
+      window: 'pixel-conversation-all',
+      single: 'pixel-single-conversation'
+    },
+    list: {
+      all: 'pixel-conversation-list',
+      single: 'pixel-conversations-body'
+    }
+  },
   messages: {
     noSettings: 'Please read the docs and install pixel tracker again',
     noClientId: 'Please make sure that you have enable client id and you have the correct clientId',
     noUserId: 'No user id has been installed',
     getCustFailed: 'Get Customer Called failed',
+    NoConversations: 'No Conversations Present'
   }
 }
+
+pixel.customer = {};
 
  /**********************
  *** CORE: UTILITIES
@@ -62,12 +73,19 @@ pixel.templater = function(html){
   };
 };
 
-// To be used later for tracking 
+// TODO: USE 1x1 gif for tracking things
 // Will load the corresponding 1x1 gif with utm parameters
 pixel.tracker = function(clientId, params) {
   
 }
 
+pixel.getElem = function(id) {
+  return $('#' + id);
+}
+
+pixel.getTemplStr = function(id) {
+  return id + '-tmpl';
+}
 /**
  * Universal Logger for pixel
  * @param  {String} msg   What to log
@@ -85,21 +103,7 @@ pixel.logger = function(msg, bool, track) {
  }
 }
 
-// Creates A Fragment of html to be inserted
-pixel.createFrag = function(htmlStr) {
-  var frag = document.createDocumentFragment(),
-      temp = document.createElement('div');
-  temp.innerHTML = htmlStr;
-  while (temp.firstChild) {
-      frag.appendChild(temp.firstChild);
-  }
-  return frag;
-}
-
-pixel.insertAfterBody = function(htmlStr) {
- document.body.insertAdjacentHTML('afterbegin', htmlStr);
-}
-
+// TODO: Move Everything over here
 pixel.cookie = monster;
 
 // TODO: https://github.com/keithws/browser-report/blob/master/index.js
@@ -301,46 +305,76 @@ pixel.browserInfo = pixel.getClientDetails();
  *** CORE: AJAX | SOCKET.IO ****
  *****************************/
 
-pixel.ajax = aja;
-
 pixel.initCust = function() {
   var settings = window.pixelSettings;
-  var postCust = pixel.constants.url.base + pixel.constants.url.customer
+  var postCust = pixel.constants.url.base + pixel.constants.url.customer;
   var pixelUser = pixel.cookie.get(pixel.constants.cookie.id);
 
-  pixel
-    .ajax()
-    .method('post')
-    .type('json')
-    .url(postCust)
-    .body({
+  $.ajax({
+    url: postCust,
+    type: 'POST',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify({
       settings: settings,
       cookie: pixelUser,
       browserInfo: pixel.browserInfo
-    })
-    .on('success', pixel.identify)
-    .on('error', function(err, res) {
+    }),
+    success: pixel.identify,
+    error: function(err, res) {
       pixel.logger(pixel.constants.messages.getCustFailed + ' '  + err, true);
-    })
-    .go();
+    }
+  });
 }
 
 pixel.init = function() {
   pixel.initTemplate();
   pixel.initCust();
+  pixel.assignEvents.init();
 }
 
-
 pixel.identify = function(res) {
+  pixel.customer = res;
   var conv = res.conversations;
   // Once the the User is identified get its conversations
-  console.log(res);
+  if (!conv.length) {
+    return pixel.logger(pixel.constants.messages.NoConversations, true);
+    pixel.NoConversations();
+  }
+
+  // TODO: List of conversation ids
+  var convId = conv[0]._id;
+
+  pixel.render.conversations(conv);
+}
+
+pixel.getMessages = function(convId) {
+  var getMesg = pixel.constants.url.base + pixel.constants.url.message
+                 + '/' + pixel.constants.url.customer;
+  $.ajax({
+    url: getMesg,
+    type: 'GET',
+    data: {
+      conversation_id: convId,
+      limit: 20,
+      customer: true
+    },
+    success: function(res) {
+      pixel.render.messages(res);
+    },
+    error: function(er) {
+      console.error(err);
+    }
+  });
+}
+
+pixel.noConversations = function() {
+  // New Customer Do Something interesting
 }
 
  /******************************
  *** HTML AND CSS GENERATION ***
  *******************************/
- // TODO: Shift this to a different html and css
  
 pixel.generator = {
   html: [
@@ -360,10 +394,14 @@ pixel.generator = {
   ].join('').replace(/\{0\}/g, pixel.constants.namespace)
 }
 
+
+pixel.templater = tmpl;
+
  /**********************
  ***** CONVERSATION MODULE ****
  **********************/
 
+// TODO: All HTML and CSS needs to be inserted over here
 pixel.initTemplate = function() {
   var head = document.head || document.getElementByTagName('head')[0];
   var style = document.createElement('style');
@@ -382,19 +420,61 @@ pixel.initTemplate = function() {
   // pixel.insertAfterBody(pixel.generator.html);
 }
 
-pixel.conversation = {
-  reply: function() {
-    // POST /api/messages
+pixel.render = {
+  conversations: function(convs) {
+    var elemId = pixel.constants.ids.list.all;
+    var $elem = pixel.getElem(elemId);
+    var html = pixel.templater(pixel.getTemplStr(elemId), convs);
+    $elem.html(html);
   },
-  fetch: function() {
-    // GET /api/messages
+  messages: function(messages) {
+    var elemId = pixel.constants.ids.list.single;
+    var $elem = pixel.getElem(elemId);
+    var html = pixel.templater(pixel.getTemplStr(elemId), messages);
+    $elem.html(html);
   }
 }
 
+ /**********************
+ *** PIXEL SETTINGS ****
+ **********************/ 
+
+pixel.assignEvents = {
+  init: function() {
+    /* PIXEL LAUNCHER */
+    this.launcher();
+    
+    /* PIXEL CONVERSATIONS */
+    this.conversations();
+  },
+  launcher: function() {
+    var $elem = pixel.getElem(pixel.constants.ids.launcher);
+    var $conv = pixel.getElem(pixel.constants.ids.container.window);
+    var $mesgC = pixel.getElem(pixel.constants.ids.container.single);
+    $elem.on('click', function() {
+      $mesgC.hide();
+      $conv.show();
+      $elem.hide();
+    });
+  },
+  conversations: function() {
+    var $conv = pixel.getElem(pixel.constants.ids.list.all);
+    var $mesgC = pixel.getElem(pixel.constants.ids.container.single);
+    $conv.on('click', 'li', function(e) {
+      $mesgC.show();
+      $conv.hide();
+      pixel.getMessages($(this).attr('data-id'));
+    });
+  },
+  close: function() {
+    
+  }
+}
 
  /**********************
  *** PIXEL SETTINGS ****
  **********************/
+
  /* EXAMPLE PIXELSETTINGS
     window.pixelSettings = {
       client_id: 'abcdef', // required

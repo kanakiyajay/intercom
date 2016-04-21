@@ -132,8 +132,12 @@ function populateMessages(err, results, cb) {
         console.log('Finished populating Employees');
         console.log('Finished populating Customers');
         console.log('Finished populating messages');
-        console.log('Finished populating Conversations');        
-        populateEmployee(conv, cb)
+        console.log('Finished populating Conversations');
+        async.parallel([function(done) {
+          populateEmployee(conv, done);
+        }, function(done) {
+          populateCustomerConv(conv, done);
+        }], cb)
     });
   });
 }
@@ -142,6 +146,13 @@ function populateEmployee(conv, cb) {
   Emp.find({}, function(err, emp) {
     emp[1].conversations.push(conv._id);
     emp[1].save(cb);
+  });
+}
+
+function populateCustomerConv(conv, cb) {
+  Customer.find({cust_id: seedJson.custo2.cust_id}, function(err, cust) {
+    cust[0].conversations.push(conv._id);
+    cust[0].save(cb);
   });
 }
 
