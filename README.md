@@ -11,8 +11,8 @@ Under development.
 
 ## TODO
 	
- - [] Websites Table
- - [] Events Table
- - [] Conversations ( Above messages, similar to support requests )
- - [] Front-end javascript widget .. Started
- - For Proper Analytics, use something like https://github.com/mnutt/hummingbird
+[] Websites Table
+[] Events Table
+[x] Conversations ( Above messages, similar to support requests )
+[] Front-end javascript widget .. Started
+[] Tracking Pixel Support

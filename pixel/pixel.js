@@ -44,7 +44,13 @@ pixel.constants = {
     },
     list: {
       all: 'pixel-conversation-list',
-      single: 'pixel-conversations-body'
+      single: 'pixel-conversations-body',
+      wrapper: 'pixel-list-wrapper'
+    },
+    buttons: {
+      close: 'pixel-close',
+      menu: 'pixel-menu',
+      minimize: 'pixel-minimize'
     }
   },
   messages: {
@@ -81,6 +87,10 @@ pixel.tracker = function(clientId, params) {
 
 pixel.getElem = function(id) {
   return $('#' + id);
+}
+
+pixel.getElemByClass = function(cls) {
+  return $('.' + cls);
 }
 
 pixel.getTemplStr = function(id) {
@@ -446,19 +456,25 @@ pixel.assignEvents = {
     
     /* PIXEL CONVERSATIONS */
     this.conversations();
+
+    /* CLOSE BUTTON */
+    this.close();
+
+    /* MENU BUTTON */
+    this.menu();
   },
   launcher: function() {
-    var $elem = pixel.getElem(pixel.constants.ids.launcher);
+    var $launch = pixel.getElem(pixel.constants.ids.launcher);
     var $conv = pixel.getElem(pixel.constants.ids.container.window);
     var $mesgC = pixel.getElem(pixel.constants.ids.container.single);
-    $elem.on('click', function() {
+    $launch.on('click', function() {
       $mesgC.hide();
       $conv.show();
-      $elem.hide();
+      $launch.hide();
     });
   },
   conversations: function() {
-    var $conv = pixel.getElem(pixel.constants.ids.list.all);
+    var $conv = pixel.getElem(pixel.constants.ids.container.window);
     var $mesgC = pixel.getElem(pixel.constants.ids.container.single);
     $conv.on('click', 'li', function(e) {
       $mesgC.show();
@@ -467,6 +483,26 @@ pixel.assignEvents = {
     });
   },
   close: function() {
+    var $wrapper = pixel.getElemByClass(pixel.constants.ids.list.wrapper);
+    var $close = pixel.getElemByClass(pixel.constants.ids.buttons.close);
+    var $launch = pixel.getElem(pixel.constants.ids.launcher);
+    $close.on('click', function() {
+      $wrapper.hide();
+      $launch.show();
+    });
+  },
+  menu: function() {
+    var $menu = pixel.getElemByClass(pixel.constants.ids.buttons.menu);
+    var $conv = pixel.getElem(pixel.constants.ids.container.window);
+    var $launch = pixel.getElem(pixel.constants.ids.launcher);
+    var $mesgC = pixel.getElem(pixel.constants.ids.container.single);
+    $menu.on('click', function() {
+      $launch.hide();
+      $mesgC.hide();
+      $conv.show();
+    });
+  },
+  minimize: function() {
     
   }
 }
