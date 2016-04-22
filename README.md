@@ -9,10 +9,10 @@ Under development.
  - req.user will contain currently authenticated user.
  - timestamps set to true to get createdAt and updatedAt
 
-## TODO
+## Priority List
 	
-[] Websites Table
-[] Events Table
-[x] Conversations ( Above messages, similar to support requests )
-[] Front-end javascript widget .. Started
-[] Tracking Pixel Support
+- [ ] Websites Table
+- [ ] Events Table
+- [x] Conversations ( Above messages, similar to support requests )
+- [ ] Front-end javascript widget .. Started
+- [ ] Tracking Pixel Support

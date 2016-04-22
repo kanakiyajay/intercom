@@ -39,6 +39,7 @@ pixel.constants = {
     launcher: 'pixel-launcher',
     container: {
       main: 'pixel-container',
+      conversation: 'pixel-conversion-container',
       window: 'pixel-conversation-all',
       single: 'pixel-single-conversation'
     },
@@ -464,29 +465,35 @@ pixel.assignEvents = {
     this.menu();
   },
   launcher: function() {
+    var $container = pixel.getElem(pixel.constants.ids.container.conversation);
     var $launch = pixel.getElem(pixel.constants.ids.launcher);
     var $conv = pixel.getElem(pixel.constants.ids.container.window);
     var $mesgC = pixel.getElem(pixel.constants.ids.container.single);
     $launch.on('click', function() {
+      $container.show();
       $mesgC.hide();
       $conv.show();
       $launch.hide();
     });
   },
   conversations: function() {
+    var $container = pixel.getElem(pixel.constants.ids.container.conversation);
     var $conv = pixel.getElem(pixel.constants.ids.container.window);
     var $mesgC = pixel.getElem(pixel.constants.ids.container.single);
     $conv.on('click', 'li', function(e) {
+      $container.show();
       $mesgC.show();
       $conv.hide();
       pixel.getMessages($(this).attr('data-id'));
     });
   },
   close: function() {
+    var $container = pixel.getElem(pixel.constants.ids.container.conversation);
     var $wrapper = pixel.getElemByClass(pixel.constants.ids.list.wrapper);
     var $close = pixel.getElemByClass(pixel.constants.ids.buttons.close);
     var $launch = pixel.getElem(pixel.constants.ids.launcher);
     $close.on('click', function() {
+      $container.hide();
       $wrapper.hide();
       $launch.show();
     });

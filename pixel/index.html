@@ -17,6 +17,7 @@
 		#pixel-container {
 			position: fixed;
 			z-index: 10000;
+			box-shadow: -2px 0px 5px 0px rgba(0,0,0,0.28);
 		}
 
 		#pixel-container #pixel-launcher {
@@ -50,14 +51,12 @@
 			bottom: 0;
 			width: 368px;
 			height: 100%;
-		}
-
-		#pixel-container #pixel-conversation-all {
 			display: none;
 		}
 
-		#pixel-container #pixel-single-conversation {
-			display: none;
+		#pixel-container .pixel-bar-body,
+		#pixel-container .pixel-bar-footer {
+			background-color: #FAFAFB;
 		}
 
 		#pixel-container .pixel-bar-heading {
@@ -104,14 +103,14 @@
 		}
 
 		#pixel-container .pixel-minimize {
-		    background-image: url(https://js.intercomcdn.com/images/icon-minimize.d9de03dd.png);
+		    background-image: url(/pixel/icons/minimize.png);
     		background-size: 15px 15px;
 		    background-repeat: no-repeat;
 		    margin-right: 6px;
 		}
 
 		#pixel-container .pixel-menu {
-		    background-image: url(https://js.intercomcdn.com/images/icon-conversations.6e0b2a74.png);
+		    background-image: url(/pixel/icons/menu.png);
     		background-size: 15px 12px;
     		background-repeat: no-repeat;
 		}
@@ -145,6 +144,27 @@
 			left: 0;
 			margin: 0 auto;
 			padding: 8px 6px 0;
+			height: 48px;
+			width: 100%;
+		}
+
+		#pixel-container .pixel-button {
+			cursor: pointer;
+			margin: 8px;
+			font-weight: 500;
+			padding: 0 18px;
+		    box-shadow: inset 0 1px 0 0 hsla(0,0%,100%,.17);
+		    background: #0074b0;
+		    background-image: linear-gradient(180deg,#1488c4,#0074b0);
+		    border-radius: 3px;
+		    text-shadow: 0 -1px rgba(0,0,0,.2);
+		    text-decoration: none;
+		    font-size: 14px;
+		    line-height: 25px;
+		    padding: 0 9px;
+		    display: inline-block;
+		    color: #fff;
+    		border: 1px solid #00609c;
 		}
 	</style>
 </head>
@@ -171,7 +191,7 @@
 					</ul>
 				</div>
 				<div id="pixel-conversation-footer" class="pixel-bar-footer">
-					<button>Add new Conversation</button>
+					<button class="pixel-button">Add new Conversation</button>
 				</div>
 			</div>
 			<div id="pixel-single-conversation" class="pixel-list-wrapper">
@@ -194,8 +214,8 @@
 					</div>
 				</div>
 				<div class="pixel-bar-footer">
-					<input type="text">
-					<button>&gt;</button>
+					<input id="pixel-input" type="text" maxlength="200" width="" required>
+					<button class="pixel-button" id="pixel-submit">&gt;</button>
 				</div>
 			</div>
 		</div>
