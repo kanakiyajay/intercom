@@ -1,0 +1,15 @@
+<h3>Conversations: </h3>
+<div class="row" ng-repeat="conversation in conversations">
+  <div class="row" ng-init="message = conversation.messages[conversation.messages.length - 1]">
+    <div class="col-lg-12">
+      <div class="list-group" ng-init="customer = message.created_by[0]">
+        <a class="list-group-item" ng-click="selectConversation(conversation._id)">
+          <code>{{ customer | json }}</code>
+          <h4 class="list-group-item-heading">{{ customer.name || currentUser.name }}</h4>
+          <p class="list-group-item-text">{{ message.message }}</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="btn btn-primary">New Conversation</button>

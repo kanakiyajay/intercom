@@ -1,38 +1,40 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<div class="container" ng-init="refresh()">
+<div class="container-fluid" ng-init="refresh()">
   <div class="row">
-    <h1>Employee Dashboard</h1>
-  </div>
-  <h1 class="page-header">Conversations:</h1>
-  <div class="row" ng-repeat="conversation in conversations">
-    <div class="row" ng-repeat="message in conversation.messages">
-
-      <div class="col-lg-12" ng-show="message.created_by_model === 'Customer'">
-        <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-init="customer = message.created_by[0]">
-          <li>{{ customer.name }} | {{ message.message }}</li>
-        </ul>
-      </div>
-      
-      <div class="col-lg-12" ng-hide="message.created_by_model === 'Customer'">
-        <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6">
-          <li>{{ currentUser.name }} | {{ message.message }}</li>
-        </ul>
-      </div>
-
+    
+    <div class="col-sm-3">
+      <div ng-include="'components/sidebar/sidebar.html'"></div>
     </div>
-  
-    <div class="row">
-      <div class="col-lg-6">
-        <form class="thing-form">
-          <p class="input-group">
-            <input type="text" class="form-control" placeholder="Send Message to Customer" ng-model="reply">
-            <span class="input-group-btn">
-              <button type="submit" class="btn btn-primary" ng-click="submitNewMessage(conversation._id, reply)">Submit</button>
-            </span>
-          </p>
-        </form>
+    
+    <div class="col-sm-3">
+      <div class="row" ng-repeat="message in conversation.messages">
+        <div class="col-lg-12" ng-show="message.created_by_model === 'Customer'">
+          <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-init="customer = message.created_by[0]">
+            <li class="text-center">{{ customer.name }} | {{ message.message }}</li>
+          </ul>
+        </div>
+        
+        <div class="col-lg-12" ng-hide="message.created_by_model === 'Customer'">
+          <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6">
+            <li class="text-center">{{ currentUser.name }} | {{ message.message }}</li>
+          </ul>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col-lg-6">
+          <form class="thing-form">
+            <p class="input-group">
+              <input type="text" class="form-control" placeholder="Send Message to Customer" ng-model="reply">
+              <span class="input-group-btn">
+                <button type="submit" class="btn btn-primary" ng-click="submitNewMessage(conversation._id, reply)">Submit</button>
+              </span>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
+
   </div>
 </div>
