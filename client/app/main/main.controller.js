@@ -15,6 +15,16 @@ angular.module('tpApp')
       });
     }
 
+    $scope.$on("convId", function(ev, convId) {
+      Message.get({
+        conversation_id: convId
+      }).$promise.then(function(res) {
+        $scope.messages = res;
+      }, function(err) {
+        console.log(err);
+      })
+    });
+
     $scope.submitNewMessage = function(conv_id, mesg) {
       // Apply Validations over here
       Message.send({

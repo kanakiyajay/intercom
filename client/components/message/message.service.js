@@ -5,6 +5,10 @@ angular.module('tpApp')
     return $resource('/api/messages/', {}, {
       send: {
         method: 'POST'
+      },
+      get: {
+      	method: 'GET',
+      	isArray: true
       }
     });
   });
