@@ -341,6 +341,7 @@ pixel.initCust = function() {
 pixel.init = function() {
   pixel.initTemplate();
   pixel.initCust();
+  pixel.initElements();
   pixel.assignEvents.init();
 }
 
@@ -450,6 +451,18 @@ pixel.render = {
  *** PIXEL SETTINGS ****
  **********************/ 
 
+pixel.initElements = function() {
+  pixel.elems = {
+    container: pixel.getElem(pixel.constants.ids.container.conversation),
+    launcher: pixel.getElem(pixel.constants.ids.launcher),
+    conv: pixel.getElem(pixel.constants.ids.container.window),
+    mesgC: pixel.getElem(pixel.constants.ids.container.single),
+    close: pixel.getElemByClass(pixel.constants.ids.buttons.close),
+    wrapper: pixel.getElemByClass(pixel.constants.ids.list.wrapper),
+    menu: pixel.getElemByClass(pixel.constants.ids.buttons.menu)
+  }
+}
+
 pixel.assignEvents = {
   init: function() {
     /* PIXEL LAUNCHER */
@@ -465,48 +478,32 @@ pixel.assignEvents = {
     this.menu();
   },
   launcher: function() {
-    var $container = pixel.getElem(pixel.constants.ids.container.conversation);
-    var $launch = pixel.getElem(pixel.constants.ids.launcher);
-    var $conv = pixel.getElem(pixel.constants.ids.container.window);
-    var $mesgC = pixel.getElem(pixel.constants.ids.container.single);
-    $launch.on('click', function() {
-      $container.show();
-      $mesgC.hide();
-      $conv.show();
-      $launch.hide();
+    pixel.elems.launcher.on('click', function() {
+      pixel.elems.container.show();
+      pixel.elems.mesgC.hide();
+      pixel.elems.conv.show();
+      pixel.elems.launcher.hide();
     });
   },
   conversations: function() {
-    var $container = pixel.getElem(pixel.constants.ids.container.conversation);
-    var $conv = pixel.getElem(pixel.constants.ids.container.window);
-    var $mesgC = pixel.getElem(pixel.constants.ids.container.single);
-    $conv.on('click', 'li', function(e) {
-      $container.show();
-      $mesgC.show();
-      $conv.hide();
+    pixel.elems.conv.on('click', 'li', function(e) {
+      pixel.elems.container.show();
+      pixel.elems.mesgC.show();
+      pixel.elems.conv.hide();
       pixel.getMessages($(this).attr('data-id'));
     });
   },
   close: function() {
-    var $container = pixel.getElem(pixel.constants.ids.container.conversation);
-    var $wrapper = pixel.getElemByClass(pixel.constants.ids.list.wrapper);
-    var $close = pixel.getElemByClass(pixel.constants.ids.buttons.close);
-    var $launch = pixel.getElem(pixel.constants.ids.launcher);
-    $close.on('click', function() {
-      $container.hide();
-      $wrapper.hide();
-      $launch.show();
+    pixel.elems.close.on('click', function() {
+      pixel.elems.container.hide();
+      pixel.elems.wrapper.hide();
+      pixel.elems.launcher.show();
     });
   },
   menu: function() {
-    var $menu = pixel.getElemByClass(pixel.constants.ids.buttons.menu);
-    var $conv = pixel.getElem(pixel.constants.ids.container.window);
-    var $launch = pixel.getElem(pixel.constants.ids.launcher);
-    var $mesgC = pixel.getElem(pixel.constants.ids.container.single);
-    $menu.on('click', function() {
-      $launch.hide();
-      $mesgC.hide();
-      $conv.show();
+    pixel.elems.menu.on('click', function() {      
+      pixel.elems.mesgC.hide();
+      pixel.elems.conv.show();
     });
   },
   minimize: function() {

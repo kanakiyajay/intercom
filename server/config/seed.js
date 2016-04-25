@@ -143,9 +143,9 @@ function populateMessages(err, results, cb) {
 }
 
 function populateEmployee(conv, cb) {
-  Emp.find({}, function(err, emp) {
-    emp[1].conversations.push(conv._id);
-    emp[1].save(cb);
+  Emp.find({email: seedJson.emplo2.email}, function(err, emp) {
+    emp[0].conversations.push(conv._id);
+    emp[0].save(cb);
   });
 }
 

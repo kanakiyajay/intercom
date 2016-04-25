@@ -27,6 +27,7 @@
 			width: 48px;
 			height: 48px;
 			z-index: 100001;
+			cursor: pointer;
 		}
 	
 		#pixel-container #pixel-message-button {
@@ -166,6 +167,27 @@
 		    color: #fff;
     		border: 1px solid #00609c;
 		}
+
+		.pixel-center-wrap {
+			position: relative;
+			text-align: center;
+			margin: 0 auto;
+		}
+
+		#pixel-input {
+			white-space: pre-wrap;
+			word-wrap: break-word;
+			padding: 10px 10px 5px 14px;
+			border-radius: 4px;
+			min-height: 40px;
+			max-height: 200px;
+			width: 260px;
+			box-sizing: border-box;
+		}
+
+		#pixel-submit {
+			vertical-align: top;
+		}
 	</style>
 </head>
 <body>
@@ -185,13 +207,12 @@
 				</div>
 				<div id="pixel-conversation-list" class="pixel-bar-body">
 					<ul class="pixel-bar-list">
-						<li>
-							Hello
-						</li>
 					</ul>
 				</div>
 				<div id="pixel-conversation-footer" class="pixel-bar-footer">
-					<button class="pixel-button">Add new Conversation</button>
+					<div class="pixel-center-wrap">
+						<button class="pixel-button">Add new Conversation</button>
+					</div>
 				</div>
 			</div>
 			<div id="pixel-single-conversation" class="pixel-list-wrapper">
@@ -200,7 +221,6 @@
 						<div class="pixel-bar-heading-icon pixel-menu"></div>
 					</div>
 					<p class="pixel-bar-heading">
-						Krishna Air Team
 					</p>
 					<div class="pixel-bar-heading-icons float-right">
 						<div class="pixel-bar-heading-icon pixel-minimize"></div>
@@ -214,8 +234,10 @@
 					</div>
 				</div>
 				<div class="pixel-bar-footer">
-					<input id="pixel-input" type="text" maxlength="200" width="" required>
-					<button class="pixel-button" id="pixel-submit">&gt;</button>
+					<div class="pixel-center-wrap">
+						<textarea placeholder="Type your message" id="pixel-input"></textarea>
+						<button class="pixel-button" id="pixel-submit">&gt;</button>
+					</div>
 				</div>
 			</div>
 		</div>
