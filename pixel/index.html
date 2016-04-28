@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<title>Demo for Javascript Pixel Contact Form</title>
 	
+	<link rel="stylesheet" type="text/css" href="pixel-grid.css">
 	<style type="text/css">
 		.float-left {
 			float: left;
@@ -133,6 +134,7 @@
 
 		#pixel-container .pixel-pre-message {
 			padding: 16px 16px 0;
+			display: none;
 		}
 	
 		#pixel-conversations-body {
@@ -144,7 +146,7 @@
 			bottom: 0;
 			left: 0;
 			margin: 0 auto;
-			padding: 8px 6px 0;
+			padding: 8px 6px;
 			height: 48px;
 			width: 100%;
 		}
@@ -181,12 +183,24 @@
 			border-radius: 4px;
 			min-height: 40px;
 			max-height: 200px;
-			width: 260px;
+			width: 290px;
 			box-sizing: border-box;
 		}
 
 		#pixel-submit {
 			vertical-align: top;
+		}
+
+		.pixel-list {
+			list-style-type: none;
+			margin: 5px;
+			padding: 0;
+		}
+
+		.pixel-list li {
+			background-color: white;
+			padding: 10px 8px;
+			margin-bottom: 5px;
 		}
 	</style>
 </head>
@@ -235,24 +249,35 @@
 				</div>
 				<div class="pixel-bar-footer">
 					<div class="pixel-center-wrap">
-						<textarea placeholder="Type your message" id="pixel-input"></textarea>
-						<button class="pixel-button" id="pixel-submit">&gt;</button>
+						<form id="pixel-form">
+							<textarea placeholder="Type your message" name="pixel-input" id="pixel-input"></textarea>
+							<button type="submit" class="pixel-button" id="pixel-submit">&gt;</button>
+						</form>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-		
+	
+	<!-- List of Conversations -->
 	<script type="text/x-tmpl" id="pixel-conversation-list-tmpl">
 		<ul class="pixel-list">
 			{% for (var i=0; i < o.length; i++) { %}
 			<li data-id="{%= o[i]._id %}">
-				<p>{%= o[i]._id %}</p>
+				<div class="pixel-grid">
+					<div class="pixel-col-1-4">
+						<img class="pixel-list-img" src="{%= o[i].website_icon %}">
+					</div>
+					<div class="pixel-col-3-4">
+						<p class="pixel-list-mesg">{%= o[i].last_message %}</p>
+					</div>
+				</div>
 			</li>
 			{% } %}
 		</ul>
 	</script>
-	
+		
+	<!-- List of Messages -->
 	<script type="text/x-tmpl" id="pixel-conversations-body-tmpl">
 		<ul class="pixel-list">
 			{% for (var i=0; i < o.length; i++) { %}

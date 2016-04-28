@@ -52,7 +52,9 @@ pixel.constants = {
       close: 'pixel-close',
       menu: 'pixel-menu',
       minimize: 'pixel-minimize'
-    }
+    },
+    form: 'pixel-form',
+    input: 'pixel-input'
   },
   messages: {
     noSettings: 'Please read the docs and install pixel tracker again',
@@ -116,6 +118,18 @@ pixel.logger = function(msg, bool, track) {
 
 // TODO: Move Everything over here
 pixel.cookie = monster;
+pixel.persistent = {};
+
+// Simple Getters and Setters for pixel
+// TODO: Persist in Cookies
+pixel.set = function(name, value) {
+  pixel.persistent[name] = value;
+  return value;
+}
+
+pixel.get = function(name) {
+  return pixel.persistent[name]
+}
 
 // TODO: https://github.com/keithws/browser-report/blob/master/index.js
 pixel.getClientDetails = function() {
@@ -339,7 +353,7 @@ pixel.initCust = function() {
 }
 
 pixel.init = function() {
-  pixel.initTemplate();
+  //pixel.initTemplate();
   pixel.initCust();
   pixel.initElements();
   pixel.assignEvents.init();
@@ -347,17 +361,21 @@ pixel.init = function() {
 
 pixel.identify = function(res) {
   pixel.customer = res;
-  var conv = res.conversations;
+  var convs = res.conversations;
   // Once the the User is identified get its conversations
-  if (!conv.length) {
+  if (!convs.length) {
     return pixel.logger(pixel.constants.messages.NoConversations, true);
-    pixel.NoConversations();
+    pixel.noConversations();
   }
 
-  // TODO: List of conversation ids
-  var convId = conv[0]._id;
+  // After Identification get the message and store them
+  convs.forEach(function(conv) {
+    if (conv.messages.length) {
+      conv.last_message = conv.messages[conv.messages.length - 1].message;
+    }
+  });
 
-  pixel.render.conversations(conv);
+  pixel.render.conversations(convs);
 }
 
 pixel.getMessages = function(convId) {
@@ -376,6 +394,30 @@ pixel.getMessages = function(convId) {
     },
     error: function(er) {
       console.error(err);
+    }
+  });
+}
+
+pixel.postMesssage = function(mesg) {
+  var postMesg = pixel.constants.url.base + pixel.constants.url.message
+                 + '/' + pixel.constants.url.customer;
+
+  var convId = pixel.get('convId');
+  
+  $.ajax({
+    url: postMesg,
+    type: 'POST',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify({
+      conversation_id: convId,
+      message: mesg
+    }),
+    success: function(err, res) {
+      console.log(err, resizeBy(xDelta, yDelta));
+    },
+    error: function(err, res) {
+      pixel.logger(pixel.constants.messages.getCustFailed + ' '  + err, true);
     }
   });
 }
@@ -459,7 +501,9 @@ pixel.initElements = function() {
     mesgC: pixel.getElem(pixel.constants.ids.container.single),
     close: pixel.getElemByClass(pixel.constants.ids.buttons.close),
     wrapper: pixel.getElemByClass(pixel.constants.ids.list.wrapper),
-    menu: pixel.getElemByClass(pixel.constants.ids.buttons.menu)
+    menu: pixel.getElemByClass(pixel.constants.ids.buttons.menu),
+    form: pixel.getElem(pixel.constants.ids.form),
+    input: pixel.getElem(pixel.constants.ids.input)
   }
 }
 
@@ -476,6 +520,9 @@ pixel.assignEvents = {
 
     /* MENU BUTTON */
     this.menu();
+
+    /* SUBMIT BUTTON */
+    this.submit();
   },
   launcher: function() {
     pixel.elems.launcher.on('click', function() {
@@ -490,7 +537,9 @@ pixel.assignEvents = {
       pixel.elems.container.show();
       pixel.elems.mesgC.show();
       pixel.elems.conv.hide();
-      pixel.getMessages($(this).attr('data-id'));
+      var convId = $(this).attr('data-id');
+      pixel.getMessages(convId);
+      pixel.set('convId', convId);
     });
   },
   close: function() {
@@ -508,6 +557,13 @@ pixel.assignEvents = {
   },
   minimize: function() {
     
+  },
+  submit: function() {
+    pixel.elems.form.submit(function(e) {
+      e.preventDefault();
+      var mesg = pixel.elems.input.val();
+      pixel.postMesssage(mesg);
+    });
   }
 }
 
