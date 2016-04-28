@@ -360,7 +360,10 @@ pixel.init = function() {
 }
 
 pixel.identify = function(res) {
-  pixel.customer = res;
+  pixel.set('customer', res);
+  // Drop a Cookie over here
+  pixel.cookie.set(pixel.constants.cookie.id, res.cookie_id);
+
   var convs = res.conversations;
   // Once the the User is identified get its conversations
   if (!convs.length) {
@@ -403,7 +406,7 @@ pixel.postMesssage = function(mesg) {
                  + '/' + pixel.constants.url.customer;
 
   var convId = pixel.get('convId');
-  
+
   $.ajax({
     url: postMesg,
     type: 'POST',
@@ -414,7 +417,8 @@ pixel.postMesssage = function(mesg) {
       message: mesg
     }),
     success: function(err, res) {
-      console.log(err, resizeBy(xDelta, yDelta));
+      // Update The thread over here
+      console.log(err, res);
     },
     error: function(err, res) {
       pixel.logger(pixel.constants.messages.getCustFailed + ' '  + err, true);

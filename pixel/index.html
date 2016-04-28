@@ -202,6 +202,10 @@
 			padding: 10px 8px;
 			margin-bottom: 5px;
 		}
+
+		.pixel-pointer {
+			cursor: pointer;
+		}
 	</style>
 </head>
 <body>
@@ -261,10 +265,10 @@
 	
 	<!-- List of Conversations -->
 	<script type="text/x-tmpl" id="pixel-conversation-list-tmpl">
-		<ul class="pixel-list">
+		<ul class="pixel-list pixel-pointer">
 			{% for (var i=0; i < o.length; i++) { %}
 			<li data-id="{%= o[i]._id %}">
-				<div class="pixel-grid">
+				<div class="pixel-row">
 					<div class="pixel-col-1-4">
 						<img class="pixel-list-img" src="{%= o[i].website_icon %}">
 					</div>

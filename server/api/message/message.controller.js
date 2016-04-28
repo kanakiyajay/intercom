@@ -8,7 +8,8 @@ var Employee = require('../employee/employee.model');
 var Conversation = require('../conversation/conversation.model');
 var defaults = {
   skip: 0,
-  limit: 10
+  limit: 10,
+  cookieId: '__PIXEL_USER'
 };
 
 // Get list of messages sorted in reverse chronology
@@ -98,6 +99,7 @@ exports.destroy = function(req, res) {
 };
 
 function handleError(res, err) {
+  console.error(err);
   return res.send(500, err);
 }
 
@@ -120,4 +122,55 @@ exports.indexCustomer = function(req, res) {
       if(err) { return handleError(res, err); }
       return res.json(200, messages);
     });
+}
+
+exports.postCustomerMessage = function(req, res) {
+  // Else use req.customer
+  var cookieId = req.cookies[defaults.cookieId];
+
+  Customer.find({
+    cookie_id: cookieId
+  }, function(err, customers) {
+    if (err) handleError(res, err);
+    if (!customers) {
+      res.send(500, {
+        error: 'No Customer found'
+      });
+    }
+
+    var convId = req.body.conversation_id;
+    var mesg = {
+      conversation_id: convId,
+      message: req.body.message,
+      type: 'c2e',
+      created_by: customers[0]._id,
+      created_by_model: 'Customer',
+      status: 'unread',
+      attachments: []
+    };
+
+    console.log("New Message from Customer", mesg, customers[0]);
+
+    Message.create(mesg, function(err, message) {
+      if (err) handleError(res, err);
+      var mesgId = message._id;
+      updateConversation(convId, message, function() {
+        res.json(201, message);
+      });
+    });
+
+  });
+}
+
+function updateConversation(convId, message, cb) {
+  console.log("updateConversation", convId);
+  Conversation.findById(convId, function(err, conversation) {
+    console.log(err, conversation);
+    if (conversation.messages.indexOf(message._id) === -1) {
+      conversation.messages.push(message._id)
+      conversation.save(cb);
+    } else {
+      cb(null, conversation);
+    }
+  });
 }
