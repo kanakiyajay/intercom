@@ -16,24 +16,28 @@ angular.module('tpApp')
     }
 
     $scope.$on("convId", function(ev, convId) {
+      $scope.messageRefresh(convId);
+    });
+
+    $scope.messageRefresh = function(convId) {
       Message.get({
         conversation_id: convId
       }).$promise.then(function(res) {
         $scope.messages = res;
+        $scope.convId = convId;
       }, function(err) {
         console.log(err);
       })
-    });
+    }
 
-    $scope.submitNewMessage = function(conv_id, mesg) {
+    $scope.submitNewMessage = function(convId, mesg) {
       // Apply Validations over here
       Message.send({
-        conversation_id: conv_id,
-        message: mesg,        
-        created_by_model: 'Employee',
-        type: 'e2c'
+        conversation_id: convId,
+        message: mesg
       }).$promise.then(function(res) {
         $scope.refresh();
+        $scope.messageRefresh(convId);
       }, function(error) {
         console.error(error);
       });

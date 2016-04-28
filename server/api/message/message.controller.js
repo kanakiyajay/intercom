@@ -62,6 +62,7 @@ exports.create = function(req, res) {
 
   if (user.role) {
     message.type = 'e2c';
+    message.created_by_model = 'Employee';
   }
 
   Message.create(message, function(err, message) {

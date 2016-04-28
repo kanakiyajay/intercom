@@ -5,7 +5,7 @@
         Messages
       </div>
       <div class="list-group">
-        <li class="list-group-item" ng-repeat="message in messages">
+        <li class="list-group-item" ng-repeat="message in messages | orderBy:'createdAt'">
           <div ng-show="message.created_by_model === 'Customer'">
             {{ message.created_by.name }} | {{ message.message }}
           </div>
@@ -18,7 +18,7 @@
             <p class="input-group">
               <input type="text" class="form-control" placeholder="Send Message to Customer" ng-model="reply">
               <span class="input-group-btn">
-                <button type="submit" class="btn btn-primary" ng-click="submitNewMessage(conversation._id, reply)">Submit</button>
+                <button type="submit" class="btn btn-primary" ng-click="submitNewMessage(convId, reply)">Submit</button>
               </span>
             </p>
           </form>
