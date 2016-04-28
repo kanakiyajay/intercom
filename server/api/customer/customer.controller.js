@@ -2,6 +2,8 @@
 
 var _ = require('lodash');
 var Customer = require('./customer.model');
+var Message = require('../message/message.model');
+//var Conversation = require('../conversation/conversation.model');
 
 exports.get = function(req, res) {
   Customer.find(function (err, customer) {
@@ -35,40 +37,56 @@ exports.create = function(req, res) {
   var mQuery = getCustomerQuery(req);
   console.log('mQuery', mQuery);
   if (mQuery) {
-    // TODO: ALso populate conversions
-    Customer.findOne(mQuery).populate('conversations').exec(function(err, customer) {
-      if (err) { return handleError(res, err); }
 
-      if (!customer) {
-        handleCustomer(req, res);
-        return;
-      }
-      // Update BrowserInfo
-      customer.browserInfo = req.body.browserInfo;
+    // TODO: Also return the employee communicating with him
+    Customer
+      .findOne(mQuery)
+      .populate({
+        path: 'conversations',
+        populate: {
+          path: 'messages',
+          options: {
+            sort: {
+              createdAt: -1
+            },
+            limit: 1
+          }
+        }
+      })
+      .exec(function(err, customer) {
 
-      // Update Customer Id
-      if (!customer.cust_id && req.body.settings.cust_id) {
-        customer.cust_id = req.body.settings.cust_id;
-      }
-
-      // Update Cookie Id
-      if (!customer.cookie_id && req.body.cookie) {
-        customer.cookie_id = req.body.cookie;
-      }
-
-      if (!customer.cookie_id && !req.body.cookie) {
-        customer.cookie_id = getRandomString();
-      }
-
-      // Customer user Attributes
-      _.extend(customer.attributes, req.body.settings.attributes || {});
-
-      // Also Update the Customer
-      customer.save(function(err, cust) {
         if (err) { return handleError(res, err); }
-        res.json(201, customer);
+
+        if (!customer) {
+          handleCustomer(req, res);
+          return;
+        }
+        // Update BrowserInfo
+        customer.browserInfo = req.body.browserInfo;
+
+        // Update Customer Id
+        if (!customer.cust_id && req.body.settings.cust_id) {
+          customer.cust_id = req.body.settings.cust_id;
+        }
+
+        // Update Cookie Id
+        if (!customer.cookie_id && req.body.cookie) {
+          customer.cookie_id = req.body.cookie;
+        }
+
+        if (!customer.cookie_id && !req.body.cookie) {
+          customer.cookie_id = getRandomString();
+        }
+
+        // Customer user Attributes
+        _.extend(customer.attributes, req.body.settings.attributes || {});
+
+        // Also Update the Customer
+        customer.save(function(err, cust) {
+          if (err) { return handleError(res, err); }
+          res.json(201, cust);
+        });
       });
-    });
   } else {
     handleCustomer(req, res);
   }
@@ -148,4 +166,14 @@ function handleCustomer(req, res) {
     if(err) { return handleError(res, err); }
     return res.json(201, customer);
   });
+}
+
+function populateConversations(conversations) {
+  conversations.forEach(function(conv) {
+    if (conv.messages.length) {
+      conv.last_message = conv.messages[conv.messages.length - 1];
+      console.log(conv.last_message);
+    }
+  });
+  return conversations;
 }

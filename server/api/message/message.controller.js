@@ -26,7 +26,7 @@ exports.index = function(req, res) {
     .skip(skip)
     .limit(limit)
     .populate('created_by')
-    .sort('-createdAt')
+    .sort('createdAt')
     .exec(function (err, messages) {
       if(err) { return handleError(res, err); }
       return res.json(200, messages);
@@ -115,7 +115,7 @@ exports.indexCustomer = function(req, res) {
     .skip(skip)
     .limit(limit)
     .populate('created_by')
-    .sort('-createdAt')
+    .sort('createdAt')
     .exec(function (err, messages) {
       if(err) { return handleError(res, err); }
       return res.json(200, messages);

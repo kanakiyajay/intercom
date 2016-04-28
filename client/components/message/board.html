@@ -14,11 +14,11 @@
           </div>
         </li>
         <li class="list-group-item" ng-show="messages.length">
-          <form class="thing-form">
+          <form class="thing-form" ng-submit="submitNewMessage(convId, reply)">
             <p class="input-group">
               <input type="text" class="form-control" placeholder="Send Message to Customer" ng-model="reply">
               <span class="input-group-btn">
-                <button type="submit" class="btn btn-primary" ng-click="submitNewMessage(convId, reply)">Submit</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
               </span>
             </p>
           </form>

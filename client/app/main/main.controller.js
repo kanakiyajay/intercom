@@ -42,4 +42,8 @@ angular.module('tpApp')
         console.error(error);
       });
     };
+
+    $scope.emptyInput = function() {
+      $scope.reply = '';
+    };
   });

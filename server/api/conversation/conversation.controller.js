@@ -4,6 +4,9 @@ var _ = require('lodash');
 var mongoose = require('mongoose');
 var Conversation = require('./conversation.model');
 var Message = require('../message/message.model');
+var defaults = {
+  limit: 20
+}
 
 // Get a list of conversations and its corresponsing messages
 exports.index = function(req, res) {
@@ -11,6 +14,7 @@ exports.index = function(req, res) {
     return res.json(200, {});
   }
   
+  var limit = req.body.limit || defaults.limit;
   var arr = req.body.conversations;
   var queryArr = arr.map(function(id){ return mongoose.Types.ObjectId(id); })
 
@@ -28,6 +32,10 @@ exports.index = function(req, res) {
       as: "created_by"
     }
   }, {
+    "$sort": {
+      "createdAt": 1
+    }
+  }, {
     "$group": {
       "_id": "$conversation_id",
       "messages": {
@@ -35,13 +43,13 @@ exports.index = function(req, res) {
       }
     }
   }, {
-    "$sort": {
-      "createdAt": -1
-    }
-  }, {
-    $limit: 10
+    $limit: limit
   }]).exec(function(err, resp) {
     if (err) { return handleError(res, err); }
+    // Add last message
+    resp.forEach(function(conv) {
+      conv.last_message = conv.messages[conv.messages.length - 1];
+    });
     res.json(200, resp);
   })
 };

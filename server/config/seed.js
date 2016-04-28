@@ -127,7 +127,7 @@ function populateMessages(err, results, cb) {
   msg2.created_by_model = 'Employee';
 
   Message.find({}).remove(function() {
-    Message.create(msg1, msg2, function (err) {
+    Message.create(msg1, msg2, function (err, msg1, msg2) {
       if (err) { console.error(err); }
         console.log('Finished populating Employees');
         console.log('Finished populating Customers');
@@ -137,6 +137,8 @@ function populateMessages(err, results, cb) {
           populateEmployee(conv, done);
         }, function(done) {
           populateCustomerConv(conv, done);
+        }, function(done) {
+          populateConversationAgain(msg1, msg2, done);
         }], cb)
     });
   });
@@ -153,6 +155,14 @@ function populateCustomerConv(conv, cb) {
   Customer.find({cust_id: seedJson.custo2.cust_id}, function(err, cust) {
     cust[0].conversations.push(conv._id);
     cust[0].save(cb);
+  });
+}
+
+function populateConversationAgain(msg1, msg2, cb) {
+  Conversation.find({}, function(err, conv) {
+    conv[0].messages.push(msg1._id);
+    conv[0].messages.push(msg2._id);
+    conv[0].save(cb);
   });
 }
 
