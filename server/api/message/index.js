@@ -9,14 +9,17 @@ var router = express.Router();
 // TODO: Implement a different Auth for the customer
 
 router.get('/', auth.isAuthenticated(), controller.index);
-
-router.get('/customers', controller.indexCustomer);
-router.post('/customers', controller.postCustomerMessage);
-
-router.get('/:id', auth.isAuthenticated(), controller.show);
 router.post('/', auth.isAuthenticated(), controller.create);
 router.put('/:id', auth.isAuthenticated(), controller.update);
-router.patch('/:id', auth.isAuthenticated(), controller.update);
-router.delete('/:id', auth.isAuthenticated(), controller.destroy);
+
+// For Customer
+var customerCtrl = require('./message.customer.controller.js');
+var customerRouter = express.Router();
+
+customerRouter.get('/', customerCtrl.index);
+customerRouter.post('/', customerCtrl.create);
+customerRouter.put('/', customerCtrl.update);
+
+router.use('/customer', customerRouter);
 
 module.exports = router;
