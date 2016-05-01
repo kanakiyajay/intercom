@@ -6,13 +6,12 @@ var auth = require('../../auth/auth.service');
 
 var router = express.Router();
 
-// TODO: Implement a different Auth for the customer
 
 router.get('/', auth.isAuthenticated(), controller.index);
 router.post('/', auth.isAuthenticated(), controller.create);
 router.put('/:id', auth.isAuthenticated(), controller.update);
 
-// For Customer
+// TODO: Seperate this in a different folder
 var customerCtrl = require('./message.customer.controller.js');
 var customerRouter = express.Router();
 
@@ -20,6 +19,6 @@ customerRouter.get('/', customerCtrl.index);
 customerRouter.post('/', customerCtrl.create);
 customerRouter.put('/', customerCtrl.update);
 
-router.use('/customer', customerRouter);
+router.use('/customers', customerRouter);
 
 module.exports = router;
