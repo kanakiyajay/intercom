@@ -1,5 +1,15 @@
 'use strict';
 
+
+ /* EXAMPLE PIXELSETTINGS
+  window.pixelSettings = {
+    client_id: 'abcdef', // required
+    cust_id: 269,
+    name: 'Jay Kanakiya', // not required
+    email: 'jay@jaykanakiya.com'
+  };
+*/
+
 /**
  * Pixel.js, js file to be inserted for every client
  *   Dependent upon:
@@ -18,6 +28,7 @@
  *   - Conversation Module
  *   
  */
+
 
 /**********************
  *** CORE: CONSTANTS ****
@@ -546,15 +557,6 @@ pixel.assignEvents = {
  *** PIXEL SETTINGS ****
  **********************/
 
- /* EXAMPLE PIXELSETTINGS
-    window.pixelSettings = {
-      client_id: 'abcdef', // required
-      cust_id: 269,
-      name: 'Jay Kanakiya', // not required
-      email: 'jay@jaykanakiya.com'
-    };
-  */
-
 if (!window.pixelSettings) {
   pixel.logger(pixel.constants.messages.noSettings, true);
 } else {
@@ -565,6 +567,9 @@ if (!window.pixelSettings) {
   } else if (!window.pixelSettings.cust_id) {
     // To be tracked using only cookies
     pixel.logger(pixel.constants.messages.noClientId, false);
+
+    // TODO
+    pixel.init();
   } else {
     pixel.init();
   }
