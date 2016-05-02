@@ -32,7 +32,6 @@ exports.index = function(req, res) {
 };
 
 // Creates a new message in the DB.
-// TODO: Create a new conversation if not one present
 exports.create = function(req, res) {
   // Else use req.customer
   var cookieId = req.cookies[defaults.cookieId];
@@ -47,27 +46,14 @@ exports.create = function(req, res) {
       });
     }
 
-    var convId = req.body.conversation_id;
-    var mesg = {
-      conversation_id: convId,
-      message: req.body.message,
-      type: 'c2e',
-      created_by: customers[0]._id,
-      created_by_model: 'Customer',
-      status: 'unread',
-      attachments: []
-    };
-
-    console.log("New Message from Customer", mesg);
-
-    Message.create(mesg, function(err, message) {
-      if (err) handleError(res, err);
-      var mesgId = message._id;
-      updateConversation(convId, message, function() {
-        res.json(201, message);
+    if (!req.body.conversation_id) {
+      console.log('New Conversation');
+      Conversation.create({}, function(err, conv) {
+        pushMsgToConversation(conv._id, customers[0]._id, req, res);  
       });
-    });
-
+    } else {
+      pushMsgToConversation(req.body.conversation_id, customers[0]._id, req, res);
+    }
   });
 };
 
@@ -88,6 +74,28 @@ exports.update = function(req, res) {
 function handleError(res, err) {
   console.error(err);
   return res.send(500, err);
+}
+
+function pushMsgToConversation(convId, custId, req, res) {
+  var mesg = {
+    conversation_id: convId,
+    message: req.body.message,
+    type: 'c2e',
+    created_by: custId,
+    created_by_model: 'Customer',
+    status: 'unread',
+    attachments: []
+  };
+
+  console.log("New Message from Customer", mesg);
+
+  Message.create(mesg, function(err, message) {
+    if (err) handleError(res, err);
+    var mesgId = message._id;
+    updateConversation(convId, message, function() {
+      res.json(201, message);
+    });
+  });
 }
 
 function updateConversation(convId, message, cb) {
