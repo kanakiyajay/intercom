@@ -1,0 +1,307 @@
+/**
+ * Pixel.css, All the css required for rendering
+ * 
+ *   - Pixel Grid
+ *   
+ *   - Common Css Functions
+ *   
+ *   - Conversation Module
+ *   
+ */
+
+/* PIXEL GRID */
+
+.pixel-row {
+	width: 100%;
+	margin: 0 auto;
+	overflow: hidden;
+}
+
+.pixel-row:after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+[class*='pixel-col-'] {
+	float: left;
+  min-height: 1px;
+	padding-right: 20px; /* column-space */
+}
+
+.pixel-col-1-1 {
+	width: 100%;
+}
+.pixel-col-2-3, .pixel-col-8-12 {
+	width: 66.66%;
+}
+
+.pixel-col-1-2, .pixel-col-6-12 {
+	width: 50%;
+}
+
+.pixel-col-1-3, .pixel-col-4-12 {
+	width: 33.33%;
+}
+
+.pixel-col-1-4, .pixel-col-3-12 {
+	width: 25%;
+}
+
+.pixel-col-1-5 {
+	width: 20%;
+}
+
+.pixel-col-1-6, .pixel-col-2-12 {
+	width: 16.667%;
+}
+
+.pixel-col-1-7 {
+	width: 14.28%;
+}
+
+.pixel-col-1-8 {
+	width: 12.5%;
+}
+
+.pixel-col-1-9 {
+	width: 11.1%;
+}
+
+.pixel-col-1-10 {
+	width: 10%;
+}
+
+.pixel-col-1-11 {
+	width: 9.09%;
+}
+
+.pixel-col-1-12 {
+	width: 8.33%
+}
+
+/* Layout Columns */
+
+.pixel-col-11-12 {
+	width: 91.66%
+}
+
+.pixel-col-10-12 {
+	width: 83.333%;
+}
+
+.pixel-col-9-12 {
+	width: 75%;
+}
+
+.pixel-col-5-12 {
+	width: 41.66%;
+}
+
+.pixel-col-7-12 {
+	width: 58.33%
+}
+
+/* COMMON CSS FUNCTIONS */
+
+.float-left {
+	float: left;
+}
+
+.float-right {
+	float: right;
+}
+
+.pixel-center-wrap {
+	position: relative;
+	text-align: center;
+	margin: 0 auto;
+}
+
+.pixel-list {
+	list-style-type: none;
+	margin: 5px;
+	padding: 0;
+}
+
+.pixel-list li {
+	background-color: white;
+	padding: 10px 8px;
+	margin-bottom: 5px;
+}
+
+.pixel-pointer {
+	cursor: pointer;
+}
+
+/* PIXEL CONTAINER / LAUNCHER */
+
+#pixel-container {
+	position: fixed;
+	z-index: 10000;
+	box-shadow: -2px 0px 5px 0px rgba(0,0,0,0.28);
+}
+
+#pixel-container #pixel-launcher {
+	position: fixed;
+	bottom: 10px;
+	right: 20px;
+	width: 48px;
+	height: 48px;
+	z-index: 100001;
+	cursor: pointer;
+}
+
+#pixel-container #pixel-message-button {
+	border-radius: 50%;
+	bottom: 0;
+	right: 0;
+	height: 48px;
+	width: 48px;
+	background-color: #d2504d;
+	border-color: #aa2825;
+	background-image: url(https://js.intercomcdn.com/images/icon-launcher-acquire.8a742481.png);
+	background-size: 26px 25px;
+	background-repeat: no-repeat;
+	box-shadow: 0 6px 13px 0 rgba(0,0,0,.23);
+	background-position: 50%;
+}
+
+#pixel-container #pixel-conversion-container {
+	position: fixed;
+	z-index: 10000;
+	right: 0;
+	bottom: 0;
+	width: 368px;
+	height: 100%;
+	display: none;
+}
+
+#pixel-container .pixel-bar-body,
+#pixel-container .pixel-bar-footer {
+	background-color: #FAFAFB;
+}
+
+#pixel-container .pixel-bar-heading {
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-size: 15px;
+    line-height: 48px;
+    font-weight: 500;
+    color: #465c66;
+    letter-spacing: .2px;
+    display: inline-block;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+	margin: 0;
+}
+
+#pixel-container .pixel-bar-header {
+	background: white;
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 100%;
+	height: 48px;
+	z-index: 10000;
+	text-align: center;
+	overflow: hidden;
+	box-shadow: 0 1px 2px 0 rgba(0,0,0,.12);
+}
+
+.pixel-bar-heading-icons {
+	position: relative;
+	height: 100%;
+	margin: 0 20px;
+}
+
+#pixel-container .pixel-bar-heading-icon {
+	height: 100%;
+	cursor: pointer;
+	width: 16px;
+	display: inline-block;
+	background-position: 50%;
+    opacity: .4;
+}
+
+#pixel-container .pixel-minimize {
+    background-image: url(/pixel/icons/minimize.png);
+	background-size: 15px 15px;
+    background-repeat: no-repeat;
+    margin-right: 6px;
+}
+
+#pixel-container .pixel-menu {
+    background-image: url(/pixel/icons/menu.png);
+	background-size: 15px 12px;
+	background-repeat: no-repeat;
+}
+
+#pixel-container .pixel-close  {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAq0lEQVR42o2RMQoCMRBFcwQ776C11upOekHEnaC47sQbWomIlWfRSm+wZiBFIAzfgYEw/PeKfLdYdyNiuSz5OHV/TLM9TTSvnPMsVx/ikPadBQh8aZ6C3Fyz62bp8SkFEOT4XQWZ670SaBCCeWwBBm0Bcb+xQSwYEFgLOO5L2LdyAEj9ObpGC7gOavuz0QLu0WoBgqhGCEJBOtwBWAly/qG1jInlWYJIoHnlfhcTzX2HEVUjAAAAAElFTkSuQmCC);
+    background-size: 13px 13px;
+    background-repeat: no-repeat;
+}
+
+#pixel-container .pixel-bar-body {
+	position: absolute;
+	top: 48px;
+	bottom: 48px;
+	width: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+#pixel-container .pixel-pre-message {
+	padding: 16px 16px 0;
+	display: none;
+}
+
+#pixel-conversations-body {
+	padding: 15px;
+}
+
+#pixel-container .pixel-bar-footer {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	margin: 0 auto;
+	padding: 8px 6px;
+	height: 48px;
+	width: 100%;
+}
+
+#pixel-container .pixel-button {
+	cursor: pointer;
+	margin: 8px;
+	font-weight: 500;
+	padding: 0 18px;
+    box-shadow: inset 0 1px 0 0 hsla(0,0%,100%,.17);
+    background: #0074b0;
+    background-image: linear-gradient(180deg,#1488c4,#0074b0);
+    border-radius: 3px;
+    text-shadow: 0 -1px rgba(0,0,0,.2);
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 25px;
+    padding: 0 9px;
+    display: inline-block;
+    color: #fff;
+	border: 1px solid #00609c;
+}
+
+#pixel-input {
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	padding: 10px 10px 5px 14px;
+	border-radius: 4px;
+	min-height: 40px;
+	max-height: 200px;
+	width: 290px;
+	box-sizing: border-box;
+}
+
+#pixel-submit {
+	vertical-align: top;
+}

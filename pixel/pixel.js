@@ -32,7 +32,10 @@ pixel.constants = {
     base: 'http://localhost:9000/api/',
     customer: 'customers',
     message: 'messages',
-    template: '/pixel/templates/html/template.all.html'
+    template: {
+      css: '/pixel/templates/css/pixel.css',
+      html: '/pixel/templates/html/template.all.html'
+    }
   },
   namespace: 'pixel',
   ids: {
@@ -427,14 +430,22 @@ pixel.templater = tmpl;
  **********************/
 
 pixel.initTemplate = function(cb) {
+  //CSS
+  $('<link>')
+    .attr('rel', 'stylesheet')
+    .attr('type', 'text/css')
+    .attr('href', pixel.constants.url.template.css)
+    .appendTo('head');
+
   // HTML
-  $.get(pixel.constants.url.template, function(tmpl) {
+  $.get(pixel.constants.url.template.html, function(tmpl) {
     $('body').append(tmpl);
     var mainId = pixel.constants.ids.main;
     var html = pixel.templater(pixel.getTemplStr(mainId), {});
     $('body').append(html);
     cb();
   });
+
   
 }
 
