@@ -390,6 +390,7 @@ pixel.identify = function(res) {
 }
 
 pixel.getMessages = function(convId) {
+  if (!convId) return;
   var getMesg = pixel.constants.url.base + pixel.constants.url.message
                  + '/' + pixel.constants.url.customer;
   $.ajax({
@@ -397,8 +398,7 @@ pixel.getMessages = function(convId) {
     type: 'GET',
     data: {
       conversation_id: convId,
-      limit: 20,
-      customer: true
+      limit: 20
     },
     success: function(res) {
       pixel.render.messages(res);
@@ -409,7 +409,7 @@ pixel.getMessages = function(convId) {
   });
 }
 
-pixel.postMesssage = function(mesg) {
+pixel.postMesssage = function(mesg, cb) {
   var postMesg = pixel.constants.url.base + pixel.constants.url.message
                  + '/' + pixel.constants.url.customer;
 
@@ -424,10 +424,7 @@ pixel.postMesssage = function(mesg) {
       conversation_id: convId,
       message: mesg
     }),
-    success: function(err, res) {
-      // Update The thread over here
-      console.log(err, res);
-    },
+    success: cb,
     error: function(err, res) {
       pixel.logger(pixel.constants.messages.getCustFailed + ' '  + err, true);
     }
@@ -477,6 +474,9 @@ pixel.render = {
     var elemId = pixel.constants.ids.list.single;
     var $elem = pixel.getElem(elemId);
     var html = pixel.templater(pixel.getTemplStr(elemId), messages);
+    if (messages.length) {
+      pixel.elems.preMessage.hide();
+    }
     $elem.html(html);
   }
 }
@@ -559,7 +559,14 @@ pixel.assignEvents = {
     pixel.elems.form.submit(function(e) {
       e.preventDefault();
       var mesg = pixel.elems.input.val();
-      pixel.postMesssage(mesg);
+      pixel.postMesssage(mesg, function(mesg) {
+        // Clear the input
+        pixel.elems.input.val('');
+
+        // Render the conversation thread again
+        pixel.getMessages(mesg.conversation_id);
+        pixel.set('convId', mesg.conversation_id);
+      });
     });
   }
 }
