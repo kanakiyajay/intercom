@@ -53,6 +53,7 @@ pixel.constants = {
   ids: {
     main: 'pixel-main',
     launcher: 'pixel-launcher',
+    preMessage: 'pixel-pre-message',
     container: {
       main: 'pixel-container',
       conversation: 'pixel-conversion-container',
@@ -372,10 +373,12 @@ pixel.identify = function(res) {
   var convs = res.conversations;
   // Once the the User is identified get its conversations
   if (!convs.length) {
-    return pixel.logger(pixel.constants.messages.NoConversations, true);
-    pixel.noConversations();
+    pixel.logger(pixel.constants.messages.NoConversations, true);
+    pixel.set('noConversations', true);
+    return;
   }
 
+  pixel.set('noConversations', false);
   // After Identification get the message and store them
   convs.forEach(function(conv) {
     if (conv.messages.length) {
@@ -432,7 +435,11 @@ pixel.postMesssage = function(mesg) {
 }
 
 pixel.noConversations = function() {
-  // New Customer Do Something interesting
+  // Automatically Enable a new message interface
+  pixel.elems.conv.hide();
+  pixel.elems.container.show();
+  pixel.elems.mesgC.show();
+  pixel.elems.preMessage.show();
 }
 
 pixel.templater = tmpl;
@@ -456,9 +463,7 @@ pixel.initTemplate = function(cb) {
     var html = pixel.templater(pixel.getTemplStr(mainId), {});
     $('body').append(html);
     cb();
-  });
-
-  
+  }); 
 }
 
 pixel.render = {
@@ -490,7 +495,8 @@ pixel.initElements = function() {
     wrapper: pixel.getElemByClass(pixel.constants.ids.list.wrapper),
     menu: pixel.getElemByClass(pixel.constants.ids.buttons.menu),
     form: pixel.getElem(pixel.constants.ids.form),
-    input: pixel.getElem(pixel.constants.ids.input)
+    input: pixel.getElem(pixel.constants.ids.input),
+    preMessage: pixel.getElem(pixel.constants.ids.preMessage)
   }
 }
 
@@ -517,6 +523,10 @@ pixel.assignEvents = {
       pixel.elems.mesgC.hide();
       pixel.elems.conv.show();
       pixel.elems.launcher.hide();
+      var noConversations = pixel.get('noConversations');
+      if (noConversations) {
+        pixel.noConversations();
+      }
     });
   },
   conversations: function() {

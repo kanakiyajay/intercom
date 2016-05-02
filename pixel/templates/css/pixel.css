@@ -134,6 +134,10 @@
 	cursor: pointer;
 }
 
+.pixel-hide {
+	display: none;
+}
+
 /* PIXEL CONTAINER / LAUNCHER */
 
 #pixel-container {
