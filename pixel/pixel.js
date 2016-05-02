@@ -10,8 +10,7 @@
  * Following has been distributed in below Modules
  * 
  *   - Inbuilt Core Wrappers
- *     - and Socket.io settings
- *     
+ *   
  *   - PixelSettings
  *   
  *   - HTML and CSS Generation
@@ -32,10 +31,12 @@ pixel.constants = {
   url: {
     base: 'http://localhost:9000/api/',
     customer: 'customers',
-    message: 'messages'
+    message: 'messages',
+    template: '/pixel/templates/html/template.all.html'
   },
   namespace: 'pixel',
   ids: {
+    main: 'pixel-main',
     launcher: 'pixel-launcher',
     container: {
       main: 'pixel-container',
@@ -318,18 +319,6 @@ pixel.getClientDetails = function() {
 
 pixel.browserInfo = pixel.getClientDetails();
 
- // TODO
-
- /*************************
- **** CORE: ATTACHMENTS ***
- *************************/
-
- // TODO
-
- /*****************************
- *** CORE: AJAX | SOCKET.IO ****
- *****************************/
-
 pixel.initCust = function() {
   var settings = window.pixelSettings;
   var postCust = pixel.constants.url.base + pixel.constants.url.customer;
@@ -353,10 +342,11 @@ pixel.initCust = function() {
 }
 
 pixel.init = function() {
-  //pixel.initTemplate();
-  pixel.initCust();
-  pixel.initElements();
-  pixel.assignEvents.init();
+  pixel.initTemplate(function() {
+    pixel.initCust();
+    pixel.initElements();
+    pixel.assignEvents.init();
+  });
 }
 
 pixel.identify = function(res) {
@@ -430,52 +420,22 @@ pixel.noConversations = function() {
   // New Customer Do Something interesting
 }
 
- /******************************
- *** HTML AND CSS GENERATION ***
- *******************************/
- 
-pixel.generator = {
-  html: [
-    '<div id="{0}-container" class="{0}-container">',
-      '<div class="{0}-message-button">',
-        '<div class="{0}-initials"></div>',
-      '</div>',
-      '<div class="{0}-badge"></div>',
-      '<div class="{0}-message-container">',
-        '<div class="{0}-single-message">',
-        '</div>',
-      '</div>',
-    '</div>'
-  ].join('').replace(/\{0\}/g, pixel.constants.namespace),
-  css: [
-    // TODO
-  ].join('').replace(/\{0\}/g, pixel.constants.namespace)
-}
-
-
 pixel.templater = tmpl;
 
  /**********************
  ***** CONVERSATION MODULE ****
  **********************/
 
-// TODO: All HTML and CSS needs to be inserted over here
-pixel.initTemplate = function() {
-  var head = document.head || document.getElementByTagName('head')[0];
-  var style = document.createElement('style');
-  style.type = 'text/css';
-
-  if (style.styleSheet) {
-    style.styleSheet.cssText = pixel.generator.css;
-  } else {
-    style.appendChild(document.createTextNode(pixel.generator.css));
-  }
-
-  // Insert the styles
-  // head.appendChild(style);
-
-  // Insert the Template
-  // pixel.insertAfterBody(pixel.generator.html);
+pixel.initTemplate = function(cb) {
+  // HTML
+  $.get(pixel.constants.url.template, function(tmpl) {
+    $('body').append(tmpl);
+    var mainId = pixel.constants.ids.main;
+    var html = pixel.templater(pixel.getTemplStr(mainId), {});
+    $('body').append(html);
+    cb();
+  });
+  
 }
 
 pixel.render = {

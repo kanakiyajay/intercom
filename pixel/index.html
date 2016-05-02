@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Demo for Javascript Pixel Contact Form</title>
+	<title>Demo when client_id and cust_id already present</title>
 	
 	<link rel="stylesheet" type="text/css" href="pixel-grid.css">
 	<style type="text/css">
@@ -209,90 +209,6 @@
 	</style>
 </head>
 <body>
-	<h1>Development Pixel</h1>
-
-	<div id="pixel-container">
-		<div id="pixel-launcher">
-			<div id="pixel-message-button">
-				<div id="pixel-initials"></div>
-			</div>
-		</div>
-		<div id="pixel-conversion-container">
-			<div id="pixel-conversation-all" class="pixel-list-wrapper">
-				<div id="pixel-conversation-header" class="pixel-bar-header">
-					<p class="pixel-bar-heading"></p>
-					<div class="pixel-bar-heading-icon pixel-close"></div>
-				</div>
-				<div id="pixel-conversation-list" class="pixel-bar-body">
-					<ul class="pixel-bar-list">
-					</ul>
-				</div>
-				<div id="pixel-conversation-footer" class="pixel-bar-footer">
-					<div class="pixel-center-wrap">
-						<button class="pixel-button">Add new Conversation</button>
-					</div>
-				</div>
-			</div>
-			<div id="pixel-single-conversation" class="pixel-list-wrapper">
-				<div class="pixel-bar-header">
-					<div class="pixel-bar-heading-icons float-left">
-						<div class="pixel-bar-heading-icon pixel-menu"></div>
-					</div>
-					<p class="pixel-bar-heading">
-					</p>
-					<div class="pixel-bar-heading-icons float-right">
-						<div class="pixel-bar-heading-icon pixel-minimize"></div>
-						<div class="pixel-bar-heading-icon pixel-close"></div>
-					</div>
-				</div>
-				<div class="pixel-bar-body">
-					<div class="pixel-pre-message"></div>
-					<div id="pixel-conversations-body">
-						
-					</div>
-				</div>
-				<div class="pixel-bar-footer">
-					<div class="pixel-center-wrap">
-						<form id="pixel-form">
-							<textarea placeholder="Type your message" name="pixel-input" id="pixel-input"></textarea>
-							<button type="submit" class="pixel-button" id="pixel-submit">&gt;</button>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<!-- List of Conversations -->
-	<script type="text/x-tmpl" id="pixel-conversation-list-tmpl">
-		<ul class="pixel-list pixel-pointer">
-			{% for (var i=0; i < o.length; i++) { %}
-			<li data-id="{%= o[i]._id %}">
-				<div class="pixel-row">
-					<div class="pixel-col-1-4">
-						<img class="pixel-list-img" src="{%= o[i].website_icon %}">
-					</div>
-					<div class="pixel-col-3-4">
-						<p class="pixel-list-mesg">{%= o[i].last_message %}</p>
-					</div>
-				</div>
-			</li>
-			{% } %}
-		</ul>
-	</script>
-		
-	<!-- List of Messages -->
-	<script type="text/x-tmpl" id="pixel-conversations-body-tmpl">
-		<ul class="pixel-list">
-			{% for (var i=0; i < o.length; i++) { %}
-			<li data-id="{%= o[i]._id %}">
-				<p>{%= o[i].created_by.name %}</p>
-				<p>{%= o[i].message %}</p>
-			</li>
-			{% } %}
-		</ul>
-	</script>
-
 	<script type="text/javascript">
 		window.pixelSettings = {
 			client_id: 'abcdef', // TODO: After Websites Table
@@ -302,6 +218,7 @@
 			email: 'jay@jaykanakiya.com'
 		};
 	</script>
+
 	<!-- TODO: Create and insert this async snippet -->
 	<!-- Also Implement it based upon appId -->
 	<script src="libs/zepto.js" type="text/javascript"></script>
