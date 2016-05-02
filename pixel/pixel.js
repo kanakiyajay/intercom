@@ -68,7 +68,8 @@ pixel.constants = {
     buttons: {
       close: 'pixel-close',
       menu: 'pixel-menu',
-      minimize: 'pixel-minimize'
+      minimize: 'pixel-minimize',
+      add: 'pixel-add-conversation'
     },
     form: 'pixel-form',
     input: 'pixel-input'
@@ -431,12 +432,13 @@ pixel.postMesssage = function(mesg, cb) {
   });
 }
 
-pixel.noConversations = function() {
+pixel.addConversation = function() {
   // Automatically Enable a new message interface
   pixel.elems.conv.hide();
   pixel.elems.container.show();
   pixel.elems.mesgC.show();
   pixel.elems.preMessage.show();
+  pixel.elems.input.focus();
 }
 
 pixel.templater = tmpl;
@@ -496,7 +498,8 @@ pixel.initElements = function() {
     menu: pixel.getElemByClass(pixel.constants.ids.buttons.menu),
     form: pixel.getElem(pixel.constants.ids.form),
     input: pixel.getElem(pixel.constants.ids.input),
-    preMessage: pixel.getElem(pixel.constants.ids.preMessage)
+    preMessage: pixel.getElem(pixel.constants.ids.preMessage),
+    add: pixel.getElem(pixel.constants.ids.buttons.add)
   }
 }
 
@@ -516,6 +519,9 @@ pixel.assignEvents = {
 
     /* SUBMIT BUTTON */
     this.submit();
+
+    /* New Conversation */
+    this.addConversation();
   },
   launcher: function() {
     pixel.elems.launcher.on('click', function() {
@@ -525,7 +531,7 @@ pixel.assignEvents = {
       pixel.elems.launcher.hide();
       var noConversations = pixel.get('noConversations');
       if (noConversations) {
-        pixel.noConversations();
+        pixel.addConversation();
       }
     });
   },
@@ -568,6 +574,9 @@ pixel.assignEvents = {
         pixel.set('convId', mesg.conversation_id);
       });
     });
+  },
+  addConversation: function() {
+    pixel.elems.add.on('click', pixel.addConversation);
   }
 }
 
