@@ -37,7 +37,8 @@
 var pixel = pixel || {};
 pixel.constants = {
   cookie: {
-    id: '__PIXEL_USER'
+    id: '__PIXEL_USER',
+    days: 365
   },
   url: {
     base: 'http://localhost:9000/api/',
@@ -366,7 +367,7 @@ pixel.init = function() {
 pixel.identify = function(res) {
   pixel.set('customer', res);
   // Drop a Cookie over here
-  pixel.cookie.set(pixel.constants.cookie.id, res.cookie_id);
+  pixel.cookie.set(pixel.constants.cookie.id, res.cookie_id, pixel.constants.cookie.days);
 
   var convs = res.conversations;
   // Once the the User is identified get its conversations

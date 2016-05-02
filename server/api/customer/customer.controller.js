@@ -3,21 +3,12 @@
 var _ = require('lodash');
 var Customer = require('./customer.model');
 var Message = require('../message/message.model');
-//var Conversation = require('../conversation/conversation.model');
+var cookieID = '__PIXEL_USER';
 
 exports.get = function(req, res) {
   Customer.find(function (err, customer) {
     if(err) { return handleError(res, err); }
     return res.json(200, customers);
-  });
-};
-
-// Get a single customer
-exports.show = function(req, res) {
-  Customer.findById(req.params.id, function (err, customer) {
-    if(err) { return handleError(res, err); }
-    if(!customer) { return res.send(404); }
-    return res.json(customer);
   });
 };
 
@@ -106,18 +97,6 @@ exports.update = function(req, res) {
   });
 };
 
-// Deletes a customer from the DB.
-exports.destroy = function(req, res) {
-  Customer.findById(req.params.id, function (err, customer) {
-    if(err) { return handleError(res, err); }
-    if(!customer) { return res.send(404); }
-    customer.remove(function(err) {
-      if(err) { return handleError(res, err); }
-      return res.send(204);
-    });
-  });
-};
-
 function handleError(res, err) {
   return res.send(500, err);
 }
@@ -125,16 +104,20 @@ function handleError(res, err) {
 function getCustomerQuery(req) {
   var settings = req.body.settings;
   if (settings.cust_id && settings.cust_id.length) {
+    console.log('getCustomerQuery', 'Customer Id Present');
     return {
       client_id: settings.client_id,
       cust_id: settings.cust_id
     }
-  } else if (req.body.cookie && req.body.cookie.length) {
+  } else if (req.cookies[cookieID] && req.cookies[cookieID].length) {
+    var cke = req.cookies[cookieID];
+    console.log('getCustomerQuery', 'Cookie Id Present', cke);
     return {
       client_id: settings.client_id,
-      cookie_id: req.body.cookie
+      cookie_id: cke
     }
   } else {
+    console.log('getCustomerQuery', 'Create a New Customer');
     return false;
   }
 }
@@ -155,7 +138,7 @@ function handleCustomer(req, res) {
   }
 
   if (!mCustomer.client_id) {
-    return handleError(res, Error('No Client Id present'));
+    return handleError(res, new Error('No Client Id present'));
   }
 
   if (req.body.settings.cust_id) {
