@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var Customer = require('./customer.model');
 var Message = require('../message/message.model');
+var Conversation = require('../conversation/conversation.model');
 var cookieID = '__PIXEL_USER';
 
 exports.get = function(req, res) {
@@ -29,7 +30,6 @@ exports.create = function(req, res) {
   console.log('mQuery', mQuery);
   if (mQuery) {
 
-    // TODO: Also return the employee communicating with him
     Customer
       .findOne(mQuery)
       .populate({
@@ -72,11 +72,23 @@ exports.create = function(req, res) {
         // Customer user Attributes
         _.extend(customer.attributes, req.body.settings.attributes || {});
 
-        // Also Update the Customer
-        customer.save(function(err, cust) {
-          if (err) { return handleError(res, err); }
-          res.json(201, cust);
-        });
+        Conversation
+          .populate(customer.conversations, [{
+            path: 'poc_id',
+            options: {
+              select: '-salt -hashedPassword -conversations'
+            }
+          }], function(err, convs) {
+
+            if (err) { return handleError(res, err); }
+
+            // Also Update the Customer
+            customer.save(function(err, cust) {
+              if (err) { return handleError(res, err); }
+              cust.conversations = convs;
+              res.json(201, cust);
+            });
+          });
       });
   } else {
     handleCustomer(req, res);

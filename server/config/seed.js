@@ -104,7 +104,9 @@ function populateCustomers(cb) {
 
 function populateConversations(cb) {
   Conversation.find({}).remove(function() {
-    Conversation.create({}, cb);
+    Conversation.create({
+      poc_kind: 'Employee'
+    }, cb);
   });
 }
 
@@ -139,7 +141,7 @@ function populateMessages(err, results, cb) {
         }, function(done) {
           populateCustomerConv(conv, done);
         }, function(done) {
-          populateConversationAgain(msg1, msg2, done);
+          populateConversationAgain(emp, msg1, msg2, done);
         }], cb)
     });
   });
@@ -159,8 +161,9 @@ function populateCustomerConv(conv, cb) {
   });
 }
 
-function populateConversationAgain(msg1, msg2, cb) {
+function populateConversationAgain(emp, msg1, msg2, cb) {
   Conversation.find({}, function(err, conv) {
+    conv[0].poc_id = emp._id;
     conv[0].messages.push(msg1._id);
     conv[0].messages.push(msg2._id);
     conv[0].save(cb);
