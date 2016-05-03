@@ -61,7 +61,7 @@
 		<li data-id="{%= o[i]._id %}">
 			<div class="pixel-row">
 				<div class="pixel-col-1-4">
-					<img class="pixel-list-img" src="{%= o[i].website_icon %}">
+					<img class="pixel-list-img" src="{%= o[i].profile_pic %}">
 				</div>
 				<div class="pixel-col-3-4">
 					<p class="pixel-list-mesg">{%= o[i].last_message %}</p>
@@ -78,7 +78,7 @@
 		{% for (var i=0; i < o.length; i++) { %}
 		<li class="pixel-row" data-id="{%= o[i]._id %}">
 			{% if (o[i].type === 'c2e') { %}
-				<div class="pixel-col-1-1 pixel-customer">
+				<div class="pixel-customer">
 					<p class="pixel-message">{%= o[i].message %}</p>
 				</div>
 			{% } else { %}

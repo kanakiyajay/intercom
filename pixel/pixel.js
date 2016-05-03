@@ -380,10 +380,17 @@ pixel.identify = function(res) {
   }
 
   pixel.set('noConversations', false);
+
   // After Identification get the message and store them
   convs.forEach(function(conv) {
     if (conv.messages.length) {
       conv.last_message = conv.messages[conv.messages.length - 1].message;
+      for (var i = 0; i < conv.messages.length; i++) {
+        if (conv.messages[i].type === 'e2c') {
+          conv.profile_pic = conv.messages[i].profile_pic;
+          break;
+        }
+      }
     }
   });
 
