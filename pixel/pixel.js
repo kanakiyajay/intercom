@@ -391,8 +391,19 @@ pixel.identify = function(res) {
           break;
         }
       }
+      
+      // Take care of expression errors
+      if (!conv.profile_pic) {
+        conv.profile_pic = '';
+        conv.poc_id = {
+          profile_pic: '',
+          name: ''
+        };
+      }
     }
   });
+
+  console.log(convs);
 
   pixel.render.conversations(convs);
 }

@@ -48,11 +48,12 @@ exports.create = function(req, res) {
 
     if (!req.body.conversation_id) {
       console.log('New Conversation');
+      // TODO: Insert client id over here
       Conversation.create({}, function(err, conv) {
-        pushMsgToConversation(conv._id, customers[0]._id, req, res);  
+        pushMsgToConversation(conv._id, customers[0], req, res);  
       });
     } else {
-      pushMsgToConversation(req.body.conversation_id, customers[0]._id, req, res);
+      pushMsgToConversation(req.body.conversation_id, customers[0], req, res);
     }
   });
 };
@@ -76,12 +77,12 @@ function handleError(res, err) {
   return res.send(500, err);
 }
 
-function pushMsgToConversation(convId, custId, req, res) {
+function pushMsgToConversation(convId, cust, req, res) {
   var mesg = {
     conversation_id: convId,
     message: req.body.message,
     type: 'c2e',
-    created_by: custId,
+    created_by: cust._id,
     created_by_model: 'Customer',
     status: 'unread',
     attachments: []
@@ -93,9 +94,20 @@ function pushMsgToConversation(convId, custId, req, res) {
     if (err) handleError(res, err);
     var mesgId = message._id;
     updateConversation(convId, message, function() {
-      res.json(201, message);
+      pushConvToCustomer(convId, cust, function() {
+        res.json(201, message);
+      });
     });
   });
+}
+
+function pushConvToCustomer(convId, cust, cb) {
+  if (cust.conversations.indexOf(convId) === -1) {
+    cust.conversations.push(convId);
+    cust.save(cb);
+  } else {
+    cb(null, cust);
+  }
 }
 
 function updateConversation(convId, message, cb) {

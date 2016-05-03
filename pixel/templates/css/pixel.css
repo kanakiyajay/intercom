@@ -173,7 +173,8 @@
 }
 
 .pixel-headline,
-.pixel-list-mesg {
+.pixel-list-mesg,
+#pixel-input {
 	font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
 }
 
@@ -345,6 +346,7 @@
 
 #pixel-submit {
 	vertical-align: top;
+	margin-left: -10px;
 }
 
 .pixel-list-mesg {
@@ -381,7 +383,6 @@
 	position: relative;
 	background: #4873d5;
 	color: white;
-	text-align: right;
 	display: inline-block;
 }
 
