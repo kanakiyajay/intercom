@@ -34,7 +34,7 @@
 					</div>
 				</div>
 				<div class="pixel-bar-body">
-					<div id="pixel-pre-message" class="pixel-hide">
+					<div id="pixel-pre-message" class="pixel-message pixel-hide">
 						Please connect with us over here
 					</div>
 					<div id="pixel-conversations-body">
@@ -76,9 +76,19 @@
 <script type="text/x-tmpl" id="pixel-conversations-body-tmpl">
 	<ul class="pixel-list">
 		{% for (var i=0; i < o.length; i++) { %}
-		<li data-id="{%= o[i]._id %}">
-			<p>{%= o[i].created_by.name %}</p>
-			<p>{%= o[i].message %}</p>
+		<li class="pixel-row" data-id="{%= o[i]._id %}">
+			{% if (o[i].type === 'c2e') { %}
+				<div class="pixel-col-1-1 pixel-customer">
+					<p class="pixel-message">{%= o[i].message %}</p>
+				</div>
+			{% } else { %}
+				<div class="pixel-col-1-5 pixel-m-l-n-sm">
+					<img class="pixel-list-img" src="{%= o[i].created_by.profile_pic %}">
+				</div>
+				<div class="pixel-col-4-5 pixel-employee">
+					<p class="pixel-message">{%= o[i].message %}</p>
+				</div>
+			{% } %}
 		</li>
 		{% } %}
 	</ul>

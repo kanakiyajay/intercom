@@ -54,6 +54,8 @@ var CustomerSchema = new Schema({
   facebook_id: String,
   twitter_id: String,
 
+  profile_pic: String,
+
   // TODO: How to capture this ?
   web_sessions: { type: Number, default: 1},
   

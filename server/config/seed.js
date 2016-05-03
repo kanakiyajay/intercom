@@ -31,15 +31,16 @@ function init(cb) {
 var seedJson = {
   emplo1: {
     provider: 'local',
-    name: 'Test Emp',
-    email: 'test@test.com',
+    name: 'Katelyn Friedson',
+    profile_pic: 'https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg',
     password: 'test'
   },
   emplo2: {
     provider: 'local',
     role: 'admin',
-    name: 'Admin',
+    name: 'Chad Engle',
     email: 'admin@admin.com',
+    profile_pic: 'https://s3.amazonaws.com/uifaces/faces/twitter/chadengle/128.jpg',
     password: 'admin',
     conversations: []
   },
