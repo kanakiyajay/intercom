@@ -3,14 +3,6 @@
 var _ = require('lodash');
 var Client = require('./client.model');
 
-// Get list of clients
-exports.index = function(req, res) {
-  Client.find(function (err, clients) {
-    if(err) { return handleError(res, err); }
-    return res.json(200, clients);
-  });
-};
-
 // Get a single client
 exports.show = function(req, res) {
   Client.findById(req.params.id, function (err, client) {
@@ -38,18 +30,6 @@ exports.update = function(req, res) {
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
       return res.json(200, client);
-    });
-  });
-};
-
-// Deletes a client from the DB.
-exports.destroy = function(req, res) {
-  Client.findById(req.params.id, function (err, client) {
-    if(err) { return handleError(res, err); }
-    if(!client) { return res.send(404); }
-    client.remove(function(err) {
-      if(err) { return handleError(res, err); }
-      return res.send(204);
     });
   });
 };

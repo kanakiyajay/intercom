@@ -10,12 +10,16 @@ var EmployeeSchema = new Schema({
   name: String,
   email: { type: String, lowercase: true },
 
+  client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Client'},
   // TODO: This will be used later for authentication and permissions
   role: {
     type: String,
     default: 'employee', // It will be admin for the first user
     enum: ['employee', 'admin', 'operator']
   },
+
+  // Later: Divide employees into teams
+  team: String,
 
   // Crypto
   hashedPassword: String,

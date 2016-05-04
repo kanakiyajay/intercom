@@ -5,15 +5,13 @@ var mongoose = require('mongoose'),
     Message = require('../message/message.model');
 
 var ConversationSchema = new Schema({
-  // initiated_by: { type: mongoose.Schema.Types.ObjectId },
-  // initiated_by_model: String, // required for dynamic refs
-  
-  // TODO: For sending emails and pings to everyone involved
+  // TODO: Do this automatically
   stakeholders: [{
     kind: String, 
     item: { type: mongoose.Schema.Types.ObjectId, refPath: 'stakeholders.kind' } 
   }],
   
+  client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Client' },
 
   // TODO, Client Table and initial communication should be of client
   // Depending upon who replied change the poc_kind and poc_id

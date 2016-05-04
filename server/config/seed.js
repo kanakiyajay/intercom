@@ -16,9 +16,12 @@ var Emp = require('../api/employee/employee.model');
 var Message = require('../api/message/message.model');
 var Customer = require('../api/customer/customer.model');
 var Conversation = require('../api/conversation/conversation.model');
+var Client = require('../api/client/client.model');
+var client;
 
 function init(cb) {
   async.parallel([
+    populateClients,
     populateCustomers,
     populateEmployees,
     populateConversations
@@ -29,6 +32,11 @@ function init(cb) {
 
 // TODO: Create a seperate json file for this 
 var seedJson = {
+  client: {
+    url: 'http://jquer.in/',
+    profile_pic: 'http://jquer.in/favicons/favicon.ico',
+    name: 'jQuer.in'
+  },
   emplo1: {
     provider: 'local',
     name: 'Katelyn Friedson',
@@ -90,6 +98,12 @@ var seedJson = {
   }
 };
 
+function populateClients(cb) {
+  Client.find({}).remove(function() {
+    Client.create(seedJson.client, cb);
+  });
+}
+
 function populateEmployees(cb) {
   Emp.find({}).remove(function() {
     Emp.create(seedJson.emplo1, seedJson.emplo2, cb);
@@ -112,9 +126,11 @@ function populateConversations(cb) {
 
 function populateMessages(err, results, cb) {
   if (err) { console.error(err); }
-  var cust = results[0][0];
-  var emp = results[1][1];
-  var conv = results[2];
+  // results is an array of clients
+  client = results[0];
+  var cust = results[1][0];
+  var emp = results[2][1];
+  var conv = results[3];
 
   var msg1 = seedJson.mess1;
   var msg2 = seedJson.mess2;
@@ -132,16 +148,20 @@ function populateMessages(err, results, cb) {
   Message.find({}).remove(function() {
     Message.create(msg1, msg2, function (err, msg1, msg2) {
       if (err) { console.error(err); }
+
         console.log('Finished populating Employees');
         console.log('Finished populating Customers');
         console.log('Finished populating messages');
         console.log('Finished populating Conversations');
+
         async.parallel([function(done) {
           populateEmployee(conv, done);
         }, function(done) {
           populateCustomerConv(conv, done);
         }, function(done) {
           populateConversationAgain(emp, msg1, msg2, done);
+        }, function(done) {
+          populateClientAgain(emp, cust, done);
         }], cb)
     });
   });
@@ -149,6 +169,7 @@ function populateMessages(err, results, cb) {
 
 function populateEmployee(conv, cb) {
   Emp.find({email: seedJson.emplo2.email}, function(err, emp) {
+    emp[0].client_id = client._id;
     emp[0].conversations.push(conv._id);
     emp[0].save(cb);
   });
@@ -156,6 +177,7 @@ function populateEmployee(conv, cb) {
 
 function populateCustomerConv(conv, cb) {
   Customer.find({cust_id: seedJson.custo2.cust_id}, function(err, cust) {
+    cust[0].client_id = client._id;
     cust[0].conversations.push(conv._id);
     cust[0].save(cb);
   });
@@ -163,11 +185,19 @@ function populateCustomerConv(conv, cb) {
 
 function populateConversationAgain(emp, msg1, msg2, cb) {
   Conversation.find({}, function(err, conv) {
+    conv[0].client_id = client._id;
     conv[0].poc_id = emp._id;
     conv[0].messages.push(msg1._id);
     conv[0].messages.push(msg2._id);
     conv[0].save(cb);
   });
+}
+
+function populateClientAgain(emp, cust, cb) {
+  client.primary = emp._id;
+  client.employees.push(emp._id);
+  client.customers.push(cust._id);
+  client.save(cb);
 }
 
 module.exports = {

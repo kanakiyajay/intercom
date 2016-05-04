@@ -10,7 +10,7 @@ var mongoose = require('mongoose'),
  * @type {Schema}
  */
 var CustomerSchema = new Schema({
-  client_id: String, // TODO: Should be required
+  client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Conversation'},
 
   // TODO: One or the other should always be present
   cust_id: String,
@@ -51,8 +51,10 @@ var CustomerSchema = new Schema({
   last_contacted_at: Date,
   created_at: Date, // This comes from the website
 
+  // For later tracking
   facebook_id: String,
   twitter_id: String,
+  company: String,
 
   profile_pic: String,
 
