@@ -11,6 +11,9 @@ angular.module('tpApp')
           conversations: user.conversations
         }).$promise.then(function(resp) {
           $scope.conversations = resp;
+          if ($scope.conversations.length) {
+            $scope.messageRefresh($scope.conversations[0]._id);
+          }
         })
       });
     }
