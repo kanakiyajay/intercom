@@ -10,6 +10,7 @@ var express = require('express');
 module.exports = function(app) {
 
   // Insert routes below
+  app.use('/api/clients', require('./api/client'));
   app.use('/api/customers', require('./api/customer'));
   app.use('/api/messages', require('./api/message'));
   app.use('/api/employees', require('./api/employee'));
