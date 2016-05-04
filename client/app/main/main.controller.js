@@ -15,10 +15,6 @@ angular.module('tpApp')
       });
     }
 
-    $scope.$on("convId", function(ev, convId) {
-      $scope.messageRefresh(convId);
-    });
-
     $scope.messageRefresh = function(convId) {
       Message.get({
         conversation_id: convId

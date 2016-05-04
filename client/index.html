@@ -9,25 +9,24 @@
     <base href="/">
     <title>Pixel Client Dashboard</title>
     <meta name="description" content="Pixel Client Dashboard">
-    <meta name="viewport" content="width=device-width">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(client) app/vendor.css -->
       <!-- bower:css -->
       <!-- endbower -->
     <!-- endbuild -->
-    <!-- build:css({.tmp,client}) app/app.css -->
     <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="assets/css/AdminLTE.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/skins/skin-blue.min.css">
-    <link rel="stylesheet" type="text/css" href="app/app.css">
+    <!-- build:css({.tmp,client}) app/app.css -->
       <!-- injector:css -->
       <!-- endinjector -->
     <!-- endbuild -->
   </head>
   <body class="hold-transition skin-blue sidebar-mini" ng-app="tpApp">
-    <div class="wrapper">
-      <div ui-view=""></div>
-    </div>
+    
+    <div ui-view=""></div>
+    
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -41,7 +40,6 @@
     <!-- build:js({client,node_modules}) app/vendor.js -->
       <!-- bower:js -->
       <script src="bower_components/jquery/dist/jquery.js"></script>
-      <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
       <script src="bower_components/angular/angular.js"></script>
       <script src="bower_components/angular-resource/angular-resource.js"></script>
       <script src="bower_components/angular-cookies/angular-cookies.js"></script>
