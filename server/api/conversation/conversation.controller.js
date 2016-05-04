@@ -4,6 +4,7 @@ var _ = require('lodash');
 var mongoose = require('mongoose');
 var Conversation = require('./conversation.model');
 var Message = require('../message/message.model');
+var Customer = require('../customer/customer.model');
 var defaults = {
   limit: 20
 }
@@ -47,11 +48,18 @@ exports.index = function(req, res) {
   }]).exec(function(err, resp) {
     if (err) { return handleError(res, err); }
     // Add last message
+    // Add customer
     resp.forEach(function(conv) {
       conv.last_message = conv.messages[conv.messages.length - 1];
+      for (var i = conv.messages.length - 1; i >= 0; i--) {
+        if (conv.messages[i].type === 'c2e') {
+          conv.customer = conv.messages[i].created_by[0];
+          break;
+        }
+      }
     });
-    res.json(200, resp);
-  })
+    res.json(200, resp);    
+  });
 };
 
 function handleError(res, err) {
