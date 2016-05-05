@@ -341,6 +341,9 @@ pixel.initCust = function() {
   var postCust = pixel.constants.url.base + pixel.constants.url.customer;
   var pixelUser = pixel.cookie.get(pixel.constants.cookie.id);
 
+  // Required for all calls
+  pixel.cookie.set('appId', settings.app_id);
+
   $.ajax({
     url: postCust,
     type: 'POST',
@@ -396,8 +399,6 @@ pixel.identify = function(res) {
     }
   });
 
-  console.log(convs);
-
   pixel.render.conversations(convs);
 }
 
@@ -405,6 +406,7 @@ pixel.getMessages = function(convId) {
   if (!convId) return;
   var getMesg = pixel.constants.url.base + pixel.constants.url.message
                  + '/' + pixel.constants.url.customer;
+
   $.ajax({
     url: getMesg,
     type: 'GET',
@@ -445,6 +447,11 @@ pixel.postMesssage = function(mesg, cb) {
 
 pixel.addConversation = function() {
   // Automatically Enable a new message interface
+  var elemId = pixel.constants.ids.list.single;
+  var $elem = pixel.getElem(elemId);
+  $elem.html('');
+  pixel.set('convId', null);
+
   pixel.elems.conv.hide();
   pixel.elems.container.show();
   pixel.elems.mesgC.show();

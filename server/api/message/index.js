@@ -14,9 +14,9 @@ router.put('/:id', auth.isAuthenticated(), controller.update);
 var customerCtrl = require('./message.customer.controller.js');
 var customerRouter = express.Router();
 
-customerRouter.get('/', customerCtrl.index);
-customerRouter.post('/', customerCtrl.create);
-customerRouter.put('/', customerCtrl.update);
+customerRouter.get('/', auth.attachClient, customerCtrl.index);
+customerRouter.post('/', auth.attachClient, customerCtrl.create);
+customerRouter.put('/', auth.attachClient, customerCtrl.update);
 
 router.use('/customers', customerRouter);
 

@@ -5,6 +5,8 @@ var mongoose = require('mongoose');
 var Message = require('./message.model');
 var Customer = require('../customer/customer.model');
 var Conversation = require('../conversation/conversation.model');
+var Employee = require('../employee/employee.model');
+var async = require('async');
 var defaults = {
   skip: 0,
   limit: 10,
@@ -42,6 +44,7 @@ exports.create = function(req, res) {
   }
 
   Customer.find({
+    client_id: req.client._id,
     cookie_id: cookieId
   }, function(err, customers) {
     if (err) handleError(res, err);
@@ -54,7 +57,11 @@ exports.create = function(req, res) {
     if (!req.body.conversation_id) {
       console.log('New Conversation');
       // TODO: Insert client id over here
-      Conversation.create({}, function(err, conv) {
+      Conversation.create({
+        client_id: req.client._id,
+        poc_kind: 'Employee',
+        poc_id: req.client.primary
+      }, function(err, conv) {
         pushMsgToConversation(conv._id, customers[0], req, res);  
       });
     } else {
@@ -100,7 +107,9 @@ function pushMsgToConversation(convId, cust, req, res) {
     var mesgId = message._id;
     updateConversation(convId, message, function() {
       pushConvToCustomer(convId, cust, function() {
-        res.json(201, message);
+        pushConvToClient(req.client, convId, function() {
+          res.json(201, message);
+        })
       });
     });
   });
@@ -113,6 +122,17 @@ function pushConvToCustomer(convId, cust, cb) {
   } else {
     cb(null, cust);
   }
+}
+
+function pushConvToClient(client, convId, cb) {
+  Employee.findById(client.primary, function(err, emp) {
+    if (emp.conversations.indexOf(convId) === -1) {
+      emp.conversations.push(convId);
+      emp.save(cb);
+    } else {
+      cb(null, emp);
+    }
+  });
 }
 
 function updateConversation(convId, message, cb) {

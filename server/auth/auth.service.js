@@ -90,8 +90,9 @@ function attachClient(req, res, next) {
     doc_link: ''
   };
   // Attach Client to the request
-  var settings = req.body.settings;
-  var appId = settings.app_id;
+  // TODO: Different way to send app_id
+  var appId = req.cookies.appId;
+
   if (!appId || !appId.length) {
     console.error('appId Not Present');
     return res.json(500, error);
@@ -126,7 +127,8 @@ function attachCustomer(req, res, next) {
   // req.client is already present
   var settings = req.body.settings;
   var query = {};
-
+  var cookieID = '__PIXEL_USER';
+  
   if (settings.cust_id && settings.cust_id.length) {
     console.log('Customer Id Present');
     query = {
