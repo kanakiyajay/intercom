@@ -16,7 +16,7 @@ var ClientSchema = new Schema({
   profile_pic: String,
 
   // Message to show to user when clicked on a new conversation
-  pre_message: String,
+  pre_message: { type: String, default: 'Please connect with us over here'},
 
   // Whether to show a striking message to user
   popup: { type: Boolean, default: false},

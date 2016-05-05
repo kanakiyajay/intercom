@@ -74,6 +74,9 @@ pixel.constants = {
     form: 'pixel-form',
     input: 'pixel-input'
   },
+  classes: {
+    heading: 'pixel-bar-heading'
+  },
   messages: {
     noSettings: 'Please read the docs and install pixel tracker again',
     noAppId: 'Please make sure that you have enable app_id and you have the correct app_id',
@@ -336,7 +339,7 @@ pixel.getClientDetails = function() {
 
 pixel.browserInfo = pixel.getClientDetails();
 
-pixel.initCust = function() {
+pixel.initCust = function(cb) {
   var settings = window.pixelSettings;
   var postCust = pixel.constants.url.base + pixel.constants.url.customer;
   var pixelUser = pixel.cookie.get(pixel.constants.cookie.id);
@@ -354,7 +357,10 @@ pixel.initCust = function() {
       cookie: pixelUser,
       browserInfo: pixel.browserInfo
     }),
-    success: pixel.identify,
+    success: function(res) {
+      pixel.identify(res);
+      cb(res.client);
+    },
     error: function(err, res) {
       pixel.logger(pixel.constants.messages.getCustFailed + ' '  + err, true);
     }
@@ -363,14 +369,13 @@ pixel.initCust = function() {
 
 pixel.init = function() {
   pixel.initTemplate(function() {
-    pixel.initCust();
+    pixel.initCust(pixel.initEssentials);
     pixel.initElements();
     pixel.assignEvents.init();
   });
 }
 
 pixel.identify = function(res) {
-  pixel.set('customer', res);
   // Drop a Cookie over here
   pixel.cookie.set(pixel.constants.cookie.id, res.cookie_id, pixel.constants.cookie.days);
 
@@ -459,6 +464,10 @@ pixel.addConversation = function() {
   pixel.elems.input.focus();
 }
 
+pixel.refreshConversations = function() {
+  
+}
+
 pixel.templater = tmpl;
 
  /**********************
@@ -481,6 +490,21 @@ pixel.initTemplate = function(cb) {
     $('body').append(html);
     cb();
   }); 
+}
+
+/**
+ * All the Titles, Pre Messages, Recent Messages, Pres
+ */
+pixel.initEssentials = function(client) {
+  // SET TITLE
+  var cls = pixel.constants.classes.heading;
+  var $elem = pixel.getElemByClass(cls);
+  $elem.text(client.name);
+
+  var preId = pixel.constants.ids.preMessage;
+  var $pre = pixel.getElem(preId);
+  $pre.text(client.pre_message);
+  // SET PRE MESSAGE
 }
 
 pixel.render = {
@@ -574,6 +598,7 @@ pixel.assignEvents = {
     pixel.elems.menu.on('click', function() {      
       pixel.elems.mesgC.hide();
       pixel.elems.conv.show();
+      pixel.refreshConversations();
     });
   },
   minimize: function() {

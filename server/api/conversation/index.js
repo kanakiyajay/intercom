@@ -8,4 +8,7 @@ var router = express.Router();
 
 router.post('/', auth.isAuthenticated(), controller.index);
 
+// TODO
+router.get('/', auth.attachClient, controller.get);
+
 module.exports = router;

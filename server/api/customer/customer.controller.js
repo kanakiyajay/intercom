@@ -13,25 +13,7 @@ exports.create = function(req, res) {
   var client = req.client;
   console.log('Customer Request', customer);
   
-  // Update BrowserInfo
-  customer.browserInfo = req.body.browserInfo;
-
-  // Update Customer Id
-  if (!customer.cust_id && req.body.settings.cust_id) {
-    customer.cust_id = req.body.settings.cust_id;
-  }
-
-  // Update Cookie Id
-  if (!customer.cookie_id && req.body.cookie) {
-    customer.cookie_id = req.body.cookie;
-  }
-
-  if (!customer.cookie_id && !req.body.cookie) {
-    customer.cookie_id = getRandomString();
-  }
-
-  // Customer user Attributes
-  _.extend(customer.attributes, req.body.settings.attributes || {});
+  customer = updateCustomer(customer, req);
 
   if (customer.conversations.length) {
     Conversation
@@ -47,13 +29,19 @@ exports.create = function(req, res) {
         // Also Update the Customer
         customer.save(function(err, cust) {
           if (err) { return handleError(res, err); }
-          cust.conversations = convs;
-          res.json(201, cust);
+          var resp = cust.toObject();
+          
+          // TODO: Remove many params from this    
+          resp.client = req.client;
+
+          res.json(201, resp);
         });
       });
   } else {
+    console.log('Customer has no conversations');
     customer.save(function(err, cust) {
       if (err) { return handleError(res, err); }
+      cust.client = req.client;
       res.json(201, cust);
     });
   }
@@ -86,4 +74,35 @@ function populateConversations(conversations) {
     }
   });
   return conversations;
+}
+
+function updateCustomer(customer, req) {
+  // Update BrowserInfo
+  customer.browserInfo = req.body.browserInfo;
+
+  // Update Customer Id
+  if (!customer.cust_id && req.body.settings.cust_id) {
+    customer.cust_id = req.body.settings.cust_id;
+  }
+
+  // Update Cookie Id
+  if (!customer.cookie_id && req.body.cookie) {
+    customer.cookie_id = req.body.cookie;
+  }
+
+  if (!customer.cookie_id && !req.body.cookie) {
+    customer.cookie_id = getRandomString();
+  }
+
+  if (req.body.settings.name) {
+    customer.name = req.body.settings.name;
+  }
+
+  if (req.body.settings.email) {
+    customer.email = req.body.settings.email;
+  }
+
+  // Customer user Attributes
+  _.extend(customer.attributes, req.body.settings.attributes || {});
+  return customer;
 }
