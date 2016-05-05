@@ -15,6 +15,7 @@
  *   Dependent upon:
  *     zepto.js | Main Lib | http://zeptojs.com/
  *     cookie-monster.js | Cookie Manipulation | https://github.com/jgallen23/cookie-monster
+ *     timeago.js | Zepto plugin for timeagp
  *     tmpl.js | Templating | https://github.com/blueimp/JavaScript-Templates
  *     
  * Following has been distributed in below Modules
@@ -91,6 +92,7 @@ pixel.customer = {};
  /**********************
  *** CORE: UTILITIES
  **********************/
+pixel.noop = function(){};
 
 // templater('{{ name }}', { name: 'Jay'}) -> 'Jay'
 pixel.templater = function(html){
@@ -464,9 +466,15 @@ pixel.addConversation = function() {
   pixel.elems.input.focus();
 }
 
-pixel.refreshConversations = function() {
-  
-}
+/**
+ * Add timeago Function helper to the templater
+ */
+tmpl.helper += ',timeago=function(t){ return $.timeago(t); }';
+
+/**
+ * Returns the first part of the string
+ */
+tmpl.helper += ',first=function(s){ return s.split(" ")[0]}'
 
 pixel.templater = tmpl;
 
@@ -501,10 +509,10 @@ pixel.initEssentials = function(client) {
   var $elem = pixel.getElemByClass(cls);
   $elem.text(client.name);
 
+  // SET PRE MESSAGE
   var preId = pixel.constants.ids.preMessage;
   var $pre = pixel.getElem(preId);
   $pre.text(client.pre_message);
-  // SET PRE MESSAGE
 }
 
 pixel.render = {
@@ -598,7 +606,8 @@ pixel.assignEvents = {
     pixel.elems.menu.on('click', function() {      
       pixel.elems.mesgC.hide();
       pixel.elems.conv.show();
-      pixel.refreshConversations();
+      // refresh conversations
+      pixel.initCust(pixel.noop);
     });
   },
   minimize: function() {

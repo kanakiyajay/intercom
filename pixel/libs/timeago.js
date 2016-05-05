@@ -90,17 +90,17 @@
         prefixFromNow: null,
         suffixAgo: "ago",
         suffixFromNow: "from now",
-        seconds: "less than a minute",
-        minute: "about a minute",
-        minutes: "%d minutes",
-        hour: "about an hour",
-        hours: "about %d hours",
+        seconds: "less than a min",
+        minute: "about a min",
+        minutes: "%d mins",
+        hour: "about an hr",
+        hours: "about %d hrs",
         day: "a day",
         days: "%d days",
-        month: "about a month",
-        months: "%d months",
-        year: "about a year",
-        years: "%d years",
+        month: "about a mon",
+        months: "%d mon",
+        year: "about a yr",
+        years: "%d yrs",
         numbers: []
       }
     },
@@ -201,25 +201,3 @@
   document.createElement("abbr");
   document.createElement("time");
 })(Zepto);
-
-
-(function($) {
-  $.timeago.settings.strings = {
-        prefixAgo: null,
-        prefixFromNow: null,
-        suffixAgo: "",
-        suffixFromNow: "mostantól számítva",
-        seconds: "most",
-        minute: "egy perce",
-        minutes: "%d perce",
-        hour: "egy órája",
-        hours: "%d órája",
-        day: "tegnap",
-        days: "%d napja",
-        month: "egy hónapja",
-        months: "%d hónapja",
-        year: "egy éve",
-        years: "%d éve",
-        numbers: []
-  }
-})(Zepto)

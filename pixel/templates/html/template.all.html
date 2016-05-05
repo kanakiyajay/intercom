@@ -58,17 +58,20 @@
 		{% for (var i=0; i < o.length; i++) { %}
 		<li class="pixel-bg-w pixel-border" data-id="{%= o[i]._id %}">
 			<div class="pixel-row">
-				<div class="pixel-col-1-6">
+				<div class="pixel-col-2-12">
 					<img class="pixel-m-t-sm pixel-list-img" src="{%= o[i].poc_id.profile_pic %}">
 				</div>
-				<div class="pixel-col-9-12">
+				<div class="pixel-col-7-12">
 					<div class="pixel-m-l">
 						<p class="pixel-headline">{%= o[i].poc_id.name %}</p>
 						<p class="pixel-list-mesg">{%= o[i].last_message %}</p>
 					</div>
 				</div>
-				<div class="pixel-col-1-12">
-					<!-- Time Ago -->
+				<div class="pixel-col-3-12">
+					<p class="pixel-timeago">{%= timeago(o[i].updatedAt) %}</p>
+					<p class="pixel icon-green">
+						<!-- READ / UNREAD -->
+					</p>
 				</div>
 			</div>
 		</li>
@@ -84,13 +87,16 @@
 			{% if (o[i].type === 'c2e') { %}
 				<div class="pixel-customer">
 					<p class="pixel-message">{%= o[i].message %}</p>
+					<p class="pixel-timeago pixel-m-l-n-xs">{%= timeago(o[i].updatedAt) %}</p>
 				</div>
 			{% } else { %}
 				<div class="pixel-col-1-5 pixel-m-l-n-sm">
 					<img class="pixel-list-img" src="{%= o[i].created_by.profile_pic %}">
+					<p class="pixel-t-center pixel-font-sm">{%= first(o[i].created_by.name) %}</p>
 				</div>
 				<div class="pixel-col-4-5 pixel-employee">
 					<p class="pixel-message">{%= o[i].message %}</p>
+					<p class="pixel-timeago pixel-m-l-n-xs">{%= timeago(o[i].updatedAt) %}</p>
 				</div>
 			{% } %}
 		</li>
