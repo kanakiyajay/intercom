@@ -385,16 +385,9 @@ pixel.identify = function(res) {
   convs.forEach(function(conv) {
     if (conv.messages.length) {
       conv.last_message = conv.messages[conv.messages.length - 1].message;
-      for (var i = 0; i < conv.messages.length; i++) {
-        if (conv.messages[i].type === 'e2c') {
-          conv.profile_pic = conv.messages[i].profile_pic;
-          break;
-        }
-      }
-      
+
       // Take care of expression errors
-      if (!conv.profile_pic) {
-        conv.profile_pic = '';
+      if (!conv.poc_id) {
         conv.poc_id = {
           profile_pic: '',
           name: ''
