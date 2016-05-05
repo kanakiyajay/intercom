@@ -35,6 +35,11 @@ exports.index = function(req, res) {
 exports.create = function(req, res) {
   // Else use req.customer
   var cookieId = req.cookies[defaults.cookieId];
+  if (!cookieId) {
+    return res.json(500, {
+      "error": "Not Authenticated"
+    });
+  }
 
   Customer.find({
     cookie_id: cookieId

@@ -76,7 +76,7 @@ pixel.constants = {
   },
   messages: {
     noSettings: 'Please read the docs and install pixel tracker again',
-    noClientId: 'Please make sure that you have enable client id and you have the correct clientId',
+    noAppId: 'Please make sure that you have enable app_id and you have the correct app_id',
     noUserId: 'No user id has been installed',
     getCustFailed: 'Get Customer Called failed',
     NoConversations: 'No Conversations Present'
@@ -605,13 +605,13 @@ pixel.assignEvents = {
 if (!window.pixelSettings) {
   pixel.logger(pixel.constants.messages.noSettings, true);
 } else {
-  if (!window.pixelSettings.client_id) {
-    pixel.logger(pixel.constants.messages.noClientId, true);
-  } else if (window.pixelSettings.client_id.length !== 6) {
-    pixel.logger(pixel.constants.messages.noClientId, true);
+  if (!window.pixelSettings.app_id) {
+    pixel.logger(pixel.constants.messages.noAppId, true);
+  } else if (window.pixelSettings.app_id.length !== 8) {
+    pixel.logger(pixel.constants.messages.noAppId, true);
   } else if (!window.pixelSettings.cust_id) {
     // To be tracked using only cookies
-    pixel.logger(pixel.constants.messages.noClientId, false);
+    pixel.logger(pixel.constants.messages.noAppId, false);
 
     // TODO
     pixel.init();

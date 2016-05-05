@@ -35,7 +35,8 @@ var seedJson = {
   client: {
     url: 'http://jquer.in/',
     profile_pic: 'http://jquer.in/favicons/favicon.ico',
-    name: 'jQuer.in'
+    name: 'jQuer.in',
+    app_id: 'rkgCVDuZ'
   },
   emplo1: {
     provider: 'local',
@@ -53,7 +54,7 @@ var seedJson = {
     conversations: []
   },
   custo1: {
-    client_id: 'abcdef',
+    app_id: 'rkgCVDuZ',
     cust_id: '123',
     name: 'Test Cust',
     email: 'cust@cust.com',
@@ -69,7 +70,7 @@ var seedJson = {
     conversations: []
   },
   custo2: {
-    client_id: 'abcdef',
+    app_id: 'rkgCVDuZ',
     cust_id: '124',
     name: 'Test Cust 2',
     email: 'cust2@cust.com',
