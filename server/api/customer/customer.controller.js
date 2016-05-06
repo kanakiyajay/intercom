@@ -47,6 +47,23 @@ exports.create = function(req, res) {
   }
 };
 
+// Get the customers of a client / employee
+exports.get = function(req, res) {
+  Customer.find({
+    client_id: req.user.client_id
+  }).exec(function(err, customers) {
+    if (err) {
+      handleError(res, err);
+    }
+
+    if (!customers) {
+      // TODO: Link to add new customers
+    }
+
+    res.json(customers);
+  });
+};
+
 // Updates an existing customer in the DB.
 exports.update = function(req, res) {
   if(req.body._id) { delete req.body._id; }

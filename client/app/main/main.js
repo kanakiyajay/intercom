@@ -7,5 +7,10 @@ angular.module('tpApp')
         url: '/',
         templateUrl: 'app/main/main.html',
         controller: 'MainCtrl'
+      })
+      .state('customer', {
+      	url: '/customer',
+      	templateUrl: 'app/customer/customer.html',
+      	controller: 'CustomerCtrl'
       });
   });

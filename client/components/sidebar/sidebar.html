@@ -18,7 +18,11 @@
     <!-- Sidebar Menu -->
     <ul class="sidebar-menu">
       <li class="header">MENU</li>
-      <!-- Optionally, you can add icons to the links -->
+      
+      <li ng-class="{'active': isActive('/customer')}">
+        <a href="/customer"><i class="fa fa-link"></i> <span>Customers</span></a>
+      </li>
+
       <li ng-class="{'active': isActive('/')}">
         <a href="/"><i class="fa fa-link"></i> <span>Conversations</span></a>
       </li>

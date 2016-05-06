@@ -9,6 +9,7 @@ var router = express.Router();
 
 // Enable CORS over here
 router.post('/', cors(), auth.openMiddleware(), controller.create);
+router.get('/', auth.isAuthenticated(), controller.get);
 
 router.put('/:id', controller.update);
 

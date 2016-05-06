@@ -12,7 +12,22 @@ angular.module('tpApp')
         user.$promise.then(function(user) {
           $scope.currentUser = user;
         });
+      } else {
+        console.log('Not Logged In');
       }
+    });
+
+    $scope.$on('refreshUser', function() {
+      Auth.isLoggedInAsync(function(bool) {
+        if (bool) {
+          var user = Auth.getCurrentUser();
+          user.$promise.then(function(user) {
+            $scope.currentUser = user;
+          });
+        } else {
+          console.log('Not Logged In');
+        }
+      });      
     });
 
     $scope.isActive = function(route) {

@@ -16,6 +16,7 @@ angular.module('tpApp')
         .then( function() {
           // Logged in, redirect to home
           $location.path('/');
+          $scope.$emit('refreshUser');
         })
         .catch( function(err) {
           $scope.errors.other = err.message;

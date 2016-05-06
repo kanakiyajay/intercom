@@ -1,0 +1,26 @@
+<div class="wrapper" ng-init="refresh()">
+	<div ng-include="'components/navbar/navbar.html'"></div>
+
+	<div ng-include="'components/sidebar/sidebar.html'"></div>
+
+	<div class="content-wrapper">
+		<div class="content">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="box">
+						<div class="box-body table-responsive no-padding">
+							<table class="table table-hover">
+								<thead></thead>
+								<tbody>
+									<tr ng-repeat="customer in customers">
+										<td>{{ customer | json }}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
