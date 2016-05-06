@@ -10,10 +10,24 @@
 					<div class="box">
 						<div class="box-body table-responsive no-padding">
 							<table class="table table-hover">
-								<thead></thead>
+								<thead>
+									<th>Name</th>
+									<th>Email</th>
+									<th>Signed up</th>
+									<th>Last Seen</th>
+									<th>Sessions</th>
+									<th>City</th>
+									<th>Conversations</th>
+								</thead>
 								<tbody>
-									<tr ng-repeat="customer in customers">
-										<td>{{ customer | json }}</td>
+									<tr ng-repeat="customer in customers" ng-click="redirectTo(customer._id)">
+										<td>{{ customer.name }}</td>
+										<td>{{ customer.email }}</td>
+										<td>{{ customer.createdAt }}</td>
+										<td>{{ customer.last_active_at }}</td>
+										<td>{{ customer.web_sessions }}</td>
+										<td>PUNE</td>
+										<td>{{ customer.conversations.length }}</td>
 									</tr>
 								</tbody>
 							</table>

@@ -1,0 +1,30 @@
+<div class="wrapper" ng-init="refresh()">
+	<div ng-include="'components/navbar/navbar.html'"></div>
+
+	<div ng-include="'components/sidebar/sidebar.html'"></div>
+
+	<div class="content-wrapper">
+		<div class="content">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="box">
+						<div class="box-header">
+							{{ customer.name }}
+						</div>
+						<div class="box-body table-responsive no-padding">
+							<div class="list-group">
+								<a class="list-group-item" ng-repeat="conversation in customer.conversations" ng-click="redirectToConv(conversation)">
+									{{ conversation }}
+								</a>
+							</div>
+							<div class="email">
+								{{ customer.email }}
+							</div>
+						</div>
+						{{ customer | json }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

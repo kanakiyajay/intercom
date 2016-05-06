@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('tpApp')
-  .controller('MainCtrl', function ($scope, $http, Auth, Conversation, Message) {
+  .controller('MainCtrl', function ($scope, $http, Auth, Conversation, $state, $stateParams) {
     var user = Auth.getCurrentUser();
-    $scope.refresh = function() {
+    $scope.refresh = function() {      
       if (!user.$promise) { return;}
       user.$promise.then(function(user) {
         Conversation.getConv({
@@ -11,13 +11,26 @@ angular.module('tpApp')
         }).$promise.then(function(resp) {
           $scope.conversations = resp;
           if ($scope.conversations.length) {
-            $scope.messageRefresh($scope.conversations[0]._id);
+            $state.go('conversation.details', {
+              conversationId: $scope.conversations[0]._id
+            });
           }
         })
       });
     }
 
-    $scope.messageRefresh = function(convId) {
+    $scope.isActive = function(convId) {
+      return $state.params.conversationId === convId;
+    }
+
+  });
+
+angular.module('tpApp')
+  .controller('ConversationCtrl', function ($scope, $http, Auth, $stateParams, Message) {
+
+    var convId = $stateParams.conversationId;
+
+    $scope.messageRefresh = function() {
       Message.get({
         conversation_id: convId
       }).$promise.then(function(res) {
@@ -28,14 +41,14 @@ angular.module('tpApp')
       })
     }
 
-    $scope.submitNewMessage = function(convId, mesg) {
+    $scope.submitNewMessage = function(mesg) {
       // Apply Validations over here
       Message.send({
         conversation_id: convId,
         message: mesg
       }).$promise.then(function(res) {
         $scope.refresh();
-        $scope.messageRefresh(convId);
+        $scope.messageRefresh();
       }, function(error) {
         console.error(error);
       });
