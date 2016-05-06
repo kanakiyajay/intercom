@@ -5,10 +5,9 @@ var mongoose = require('mongoose'),
     Message = require('../message/message.model');
 
 var ConversationSchema = new Schema({
-  // TODO: Do this automatically
   stakeholders: [{
-    kind: String, 
-    item: { type: mongoose.Schema.Types.ObjectId, refPath: 'stakeholders.kind' } 
+    model: String, 
+    _id: { type: mongoose.Schema.Types.ObjectId, refPath: 'stakeholders.model' } 
   }],
   
   client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Client' },

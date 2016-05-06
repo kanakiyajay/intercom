@@ -1,7 +1,9 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+    Schema = mongoose.Schema,
+    Conversation = require('../conversation/conversation.model'),
+    _ = require('lodash');
 
 /*********
  *  Currently putting all messages under 1 conversation
@@ -28,6 +30,19 @@ var MessageSchema = new Schema({
   timestamps: true
 });
 
-
+// Update Stakeholders in Conversation
+MessageSchema.post('save', function() {
+  var message = this;
+  Conversation.findById(message.conversation_id, function(err, conv) {
+    var isPresent = _.findIndex(conv.stakeholders, { id: message.created_by });
+    if (isPresent === -1) {
+      conv.stakeholders.push({
+        model: message.created_by_model,
+        _id: message.created_by
+      });
+      conv.save();
+    }
+  });  
+});
 
 module.exports = mongoose.model('Message', MessageSchema);

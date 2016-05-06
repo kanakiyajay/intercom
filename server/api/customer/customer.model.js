@@ -80,6 +80,6 @@ CustomerSchema.pre('validate', function(next) {
   } else {
     next();
   }
-})
+});
 
 module.exports = mongoose.model('Customer', CustomerSchema);
