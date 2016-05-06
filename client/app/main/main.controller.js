@@ -6,7 +6,6 @@ angular.module('tpApp')
     $scope.refresh = function() {
       if (!user.$promise) { return;}
       user.$promise.then(function(user) {
-        $scope.currentUser = user;
         Conversation.getConv({
           conversations: user.conversations
         }).$promise.then(function(resp) {
