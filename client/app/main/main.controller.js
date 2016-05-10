@@ -17,10 +17,17 @@ angular.module('tpApp')
           }
         })
       });
+      // TODO: Do this everytime
     }
 
     $scope.isActive = function(convId) {
       return $state.params.conversationId === convId;
+    }
+
+    $scope.newConversation = function(custId) {
+      $state.go('conversation.new', {
+        customerId: custId
+      });
     }
 
   });
@@ -28,30 +35,53 @@ angular.module('tpApp')
 angular.module('tpApp')
   .controller('ConversationCtrl', function ($scope, $http, Auth, $stateParams, Message) {
 
-    var convId = $stateParams.conversationId;
+    if ($stateParams.conversationId) {
+      var convId = $stateParams.conversationId;
+    } else {
+      var custId = $stateParams.customerId;
+      var convId = "new";
+    }
 
     $scope.messageRefresh = function() {
+      if (!$scope.isCustomerAttached()) return;
+
       Message.get({
         conversation_id: convId
       }).$promise.then(function(res) {
         $scope.messages = res;
         $scope.convId = convId;
       }, function(err) {
-        console.log(err);
+        console.error(err);
       })
-    }
+    };
 
     $scope.submitNewMessage = function(mesg) {
-      // Apply Validations over here
-      Message.send({
-        conversation_id: convId,
+      var oMesg = {
         message: mesg
-      }).$promise.then(function(res) {
-        $scope.refresh();
+      };
+
+      if ($scope.isCustomerAttached()) {
+        oMesg.conversation_id = convId;
+      }
+
+      Message.send(oMesg).$promise.then(function(res) {
+
         $scope.messageRefresh();
+        $scope.emptyInput();
+
+        if ($scope.isCustomerAttached()) {
+          $scope.refresh();
+        }
       }, function(error) {
         console.error(error);
       });
+    };
+
+    // true means that convId already present
+    $scope.isCustomerAttached = function() {
+      if (!convId) return false;
+      if (convId === "new") return false;
+      return true;
     };
 
     $scope.emptyInput = function() {

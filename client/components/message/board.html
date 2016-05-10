@@ -14,10 +14,6 @@
   <section class="content">
     <div class="row">
       <div class="col-md-3">
-        <button class="btn btn-primary btn-block margin-bottom">
-          Compose
-        </button>
-        
         <div class="box box-solid">
           <div class="box-body no-padding">
             <ul class="list-group">
@@ -27,8 +23,15 @@
                     <img class="img-responsive" src="{{ conversation.customer.profile_pic }}">                   
                   </div>
                   <div class="media-body">
-                    <h4 class="list-group-item-heading">{{ conversation.customer.name }}</h4>
-                    <p class="list-group-item-text">{{ conversation.last_message.message }}</p>
+                    <div class="col-md-9">
+                      <h4 class="list-group-item-heading">{{ conversation.customer.name }}</h4>
+                      <p class="list-group-item-text">{{ conversation.last_message.message }}</p>
+                    </div>
+                    <div class="col-md-3">
+                      <button type="button" class="btn btn-default btn-xs" tooltip-placement="top" uib-tooltip="New Conversation" ng-click="newConversation(conversation.customer._id)">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </a>

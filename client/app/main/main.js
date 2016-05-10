@@ -13,6 +13,11 @@ angular.module('tpApp')
         templateUrl: 'components/message/message.html',
         controller: 'ConversationCtrl'
       })
+      .state('conversation.new', {
+        url: '/conversation/new/{customerId}',
+        templateUrl: 'components/message/message.html',
+        controller: 'ConversationCtrl'
+      })
       .state('customer', {
       	url: '/customer',
       	templateUrl: 'app/customer/customer.html',

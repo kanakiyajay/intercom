@@ -3,6 +3,9 @@
     Messages
   </div>
   <div class="box-body">
+    <div class="row" ng-hide="isCustomerAttached()">
+      Customer: 
+    </div>
     <div class="direct-chat-messages">
       <div ng-repeat="message in messages | orderBy:'createdAt'" class="direct-chat-msg" ng-class="{'right': message.created_by_model === 'Customer'}">
         <div class="direct-chat-info clearfix">
@@ -25,7 +28,7 @@
   </div>
 
   <div class="box-footer">
-    <form class="thing-form" ng-submit="submitNewMessage(convId, reply)">
+    <form class="thing-form" ng-submit="submitNewMessage(reply)">
       <p class="input-group">
         <input type="text" class="form-control" placeholder="Send Message to Customer" ng-model="reply">
         <span class="input-group-btn">
