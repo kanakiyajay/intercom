@@ -2,7 +2,8 @@
 
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    Message = require('../message/message.model');
+    Message = require('../message/message.model'),
+    Employee = require('../employee/employee.model');
 
 var ConversationSchema = new Schema({
   stakeholders: [{
@@ -27,6 +28,19 @@ var ConversationSchema = new Schema({
 
 ConversationSchema.virtual('last_message').get(function() {
   return this.messages[this.messages.length - 1];
+});
+
+// Update Conversations of the primary employee
+ConversationSchema.post('save', function() {
+  var conv = this;
+  if (conv.poc_id) {
+    Employee.findById(conv.poc_id, function(err, emp) {
+      if (emp.conversations.indexOf(conv._id) === -1) {
+        emp.conversations.push(conv._id);
+        emp.save();
+      }
+    });
+  }
 });
 
 module.exports = mongoose.model('Conversation', ConversationSchema);

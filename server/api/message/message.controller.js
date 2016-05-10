@@ -35,33 +35,49 @@ exports.index = function(req, res) {
 };
 
 // Creates a new message in the DB.
-// TODO: Create a new conversation if not one present
 exports.create = function(req, res) {
   var user = req.user;
-  /*
-  if (!req.body.created_for) {
-    return res.json(500, { error: 'No Created For specified'});
-  }*/
 
+  if (!req.body.conversation_id) {
+    console.log('New Conversation');
+    // TODO: Insert client id over here
+    Conversation.create({
+      client_id: req.user.client_id,
+      poc_kind: 'Employee',
+      poc_id: req.user._id
+    }, function(err, conv) {
+      handleMessage(conv._id, req, res);
+    });
+  } else {
+    var convId = req.body.conversation_id;
+    handleMessage(convId, req, res);
+  }
+};
+
+function handleMessage(convId, req, res) {
   var message = {
-    conversation_id: req.body.conversation_id,
+    conversation_id: convId,
     message: req.body.message,
     attachments: [],
-    created_by: user._id,
-    created_for: req.body.created_for,
-    in_reponse_to: req.body.in_reponse_to || null 
+    type: 'e2c',
+    created_by_model: 'Employee',
+    created_by: req.user._id
   };
-
-  if (user.role) {
-    message.type = 'e2c';
-    message.created_by_model = 'Employee';
-  }
 
   Message.create(message, function(err, message) {
     if(err) { return handleError(res, err); }
     return res.json(201, message);
   });
-};
+}
+
+function pushConvToCustomer(convId, cust, cb) {
+  if (cust.conversations.indexOf(convId) === -1) {
+    cust.conversations.push(convId);
+    cust.save(cb);
+  } else {
+    cb(null, cust);
+  }
+}
 
 // Updates an existing message in the DB.
 exports.update = function(req, res) {

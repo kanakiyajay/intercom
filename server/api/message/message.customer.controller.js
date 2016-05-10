@@ -105,45 +105,6 @@ function pushMsgToConversation(convId, cust, req, res) {
   Message.create(mesg, function(err, message) {
     if (err) handleError(res, err);
     var mesgId = message._id;
-    updateConversation(convId, message, function() {
-      pushConvToCustomer(convId, cust, function() {
-        pushConvToClient(req.client, convId, function() {
-          res.json(201, message);
-        })
-      });
-    });
-  });
-}
-
-function pushConvToCustomer(convId, cust, cb) {
-  if (cust.conversations.indexOf(convId) === -1) {
-    cust.conversations.push(convId);
-    cust.save(cb);
-  } else {
-    cb(null, cust);
-  }
-}
-
-function pushConvToClient(client, convId, cb) {
-  Employee.findById(client.primary, function(err, emp) {
-    if (emp.conversations.indexOf(convId) === -1) {
-      emp.conversations.push(convId);
-      emp.save(cb);
-    } else {
-      cb(null, emp);
-    }
-  });
-}
-
-function updateConversation(convId, message, cb) {
-  console.log("updateConversation", convId);
-  Conversation.findById(convId, function(err, conversation) {
-    console.log(err, conversation);
-    if (conversation.messages.indexOf(message._id) === -1) {
-      conversation.messages.push(message._id);
-      conversation.save(cb);
-    } else {
-      cb(null, conversation);
-    }
+    res.json(201, message);
   });
 }
