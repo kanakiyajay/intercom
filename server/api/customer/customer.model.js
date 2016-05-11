@@ -3,6 +3,8 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
+var Client = require('../client/client.model');
+
 /**
  * Customers which are going to be tracked
  * In this website id and website customer id should be unique together
@@ -10,7 +12,7 @@ var mongoose = require('mongoose'),
  * @type {Schema}
  */
 var CustomerSchema = new Schema({
-  client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Conversation'},
+  client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Conversation', required: true},
 
   // TODO: One or the other should always be present
   cust_id: String,
@@ -80,6 +82,19 @@ CustomerSchema.pre('validate', function(next) {
   } else {
     next();
   }
+});
+
+/**
+ * Post save hook for client id
+ */
+CustomerSchema.post('save', function() {
+  var cust = this;
+  Client.findById(cust.client_id, function(err, client) {
+    if (client.customers.indexOf(cust._id) === -1) {
+      client.customers.push(cust._id);
+      client.save();
+    }
+  });
 });
 
 module.exports = mongoose.model('Customer', CustomerSchema);

@@ -11,13 +11,14 @@ var ConversationSchema = new Schema({
     _id: { type: mongoose.Schema.Types.ObjectId, refPath: 'stakeholders.model' } 
   }],
   
-  client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Client' },
+  client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true},
 
-  // TODO, Client Table and initial communication should be of client
-  // Depending upon who replied change the poc_kind and poc_id
+  /**
+   * TODO:
+   *  Pre save hook for default poc for every conversation
+   *  change conversation depeding upon who replied
+   */
   poc_kind: { type: String, default: 'Employee', enum: ['Client', 'Employee'], required: true},
-
-  // POINT OF CONTACT
   poc_id: { type: mongoose.Schema.Types.ObjectId, refPath: 'poc_kind'},
 
   messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }]

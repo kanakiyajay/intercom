@@ -56,7 +56,7 @@ MessageSchema.post('save', function() {
       });
     }
 
-    if (conv.messages.indexOf(message._id) == -1) {
+    if (conv.messages.indexOf(message._id) === -1) {
       conv.messages.push(message._id);
     }
 

@@ -3,6 +3,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
+var Client = require('../client/client.model');
 
 var EmployeeSchema = new Schema({
 
@@ -10,7 +11,7 @@ var EmployeeSchema = new Schema({
   name: String,
   email: { type: String, lowercase: true },
 
-  client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Client'},
+  client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true},
   // TODO: This will be used later for authentication and permissions
   role: {
     type: String,
@@ -161,5 +162,18 @@ EmployeeSchema.methods = {
     return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
   }
 };
+
+/**
+ * Post save hook for client id
+ */
+EmployeeSchema.post('save', function() {
+  var emp = this;
+  Client.findById(emp.client_id, function(err, client) {
+    if (client.employees.indexOf(emp._id) === -1) {
+      client.employees.push(emp._id);
+      client.save();
+    }
+  });
+});
 
 module.exports = mongoose.model('Employee', EmployeeSchema);

@@ -17,7 +17,7 @@ var Message = require('../api/message/message.model');
 var Customer = require('../api/customer/customer.model');
 var Conversation = require('../api/conversation/conversation.model');
 var Client = require('../api/client/client.model');
-var client;
+var clientId = mongoose.Types.ObjectId();
 
 function init(cb) {
   async.parallel([
@@ -33,18 +33,21 @@ function init(cb) {
 // TODO: Create a seperate json file for this 
 var seedJson = {
   client: {
+    _id: clientId,
     url: 'http://jquer.in/',
     profile_pic: 'http://jquer.in/favicons/favicon.ico',
     name: 'jQuer.in',
     app_id: 'rkgCVDuZ'
   },
   emplo1: {
+    client_id: clientId,
     provider: 'local',
     name: 'Katelyn Friedson',
     profile_pic: 'https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg',
     password: 'test'
   },
   emplo2: {
+    client_id: clientId,
     provider: 'local',
     role: 'admin',
     name: 'Chad Engle',
@@ -54,6 +57,7 @@ var seedJson = {
     conversations: []
   },
   custo1: {
+    client_id: clientId,
     app_id: 'rkgCVDuZ',
     cust_id: '123',
     name: 'Test Cust',
@@ -70,6 +74,7 @@ var seedJson = {
     conversations: []
   },
   custo2: {
+    client_id: clientId,
     app_id: 'rkgCVDuZ',
     cust_id: '124',
     name: 'Test Cust 2',
@@ -96,6 +101,10 @@ var seedJson = {
     message: 'Hello World 2',
     type: 'e2c',
     attachments: []
+  },
+  conv: {
+    client_id: clientId,
+    poc_kind: 'Employee'
   }
 };
 
@@ -119,86 +128,45 @@ function populateCustomers(cb) {
 
 function populateConversations(cb) {
   Conversation.find({}).remove(function() {
-    Conversation.create({
-      poc_kind: 'Employee'
-    }, cb);
+    Conversation.create(seedJson.conv, cb);
+  });
+}
+
+function createMessages(msg1, msg2, cb) {
+  Message.find({}).remove(function() {
+    Message.create(msg1, msg2, function (err) {
+      if (err) { console.error(err); }
+        console.log('Finished populating Employees');
+        console.log('Finished populating Customers');
+        console.log('Finished populating messages');
+        console.log('Finished populating Conversations');
+        if (typeof cb === "function") cb();
+    });
   });
 }
 
 function populateMessages(err, results, cb) {
   if (err) { console.error(err); }
   // results is an array of clients
-  client = results[0];
-  var cust = results[1][0];
+  var cust = results[1][1];
   var emp = results[2][1];
   var conv = results[3];
 
   var msg1 = seedJson.mess1;
   var msg2 = seedJson.mess2;
 
-  msg1.created_for = emp._id;
   msg1.created_by = cust._id;
   msg1.conversation_id = conv._id;
   msg1.created_by_model = 'Customer';
 
-  msg2.created_for = cust._id;
   msg2.created_by = emp._id;
   msg2.conversation_id = conv._id;
   msg2.created_by_model = 'Employee';
 
-  Message.find({}).remove(function() {
-    Message.create(msg1, msg2, function (err, msg1, msg2) {
-      if (err) { console.error(err); }
-
-        console.log('Finished populating Employees');
-        console.log('Finished populating Customers');
-        console.log('Finished populating messages');
-        console.log('Finished populating Conversations');
-
-        async.parallel([function(done) {
-          populateEmployee(conv, done);
-        }, function(done) {
-          populateCustomerConv(conv, done);
-        }, function(done) {
-          populateConversationAgain(emp, msg1, msg2, done);
-        }, function(done) {
-          populateClientAgain(emp, cust, done);
-        }], cb)
-    });
+  conv.poc_id = emp._id;
+  conv.save(function() {
+    createMessages(msg1, msg2, cb);
   });
-}
-
-function populateEmployee(conv, cb) {
-  Emp.find({email: seedJson.emplo2.email}, function(err, emp) {
-    emp[0].client_id = client._id;
-    emp[0].conversations.push(conv._id);
-    emp[0].save(cb);
-  });
-}
-
-function populateCustomerConv(conv, cb) {
-  Customer.find({cust_id: seedJson.custo2.cust_id}, function(err, cust) {
-    cust[0].client_id = client._id;
-    cust[0].conversations.push(conv._id);
-    cust[0].save(cb);
-  });
-}
-
-function populateConversationAgain(emp, msg1, msg2, cb) {
-  Conversation.find({}, function(err, conv) {
-    conv[0].client_id = client._id;
-    conv[0].poc_id = emp._id;
-    conv[0].messages.push(msg1._id);
-    conv[0].messages.push(msg2._id);
-    conv[0].save(cb);
-  });
-}
-
-function populateClientAgain(emp, cust, cb) {
-  client.primary = emp._id;
-  client.employees.push(emp._id);
-  client.customers.push(cust._id);
-  client.save(cb);
 }
 
 module.exports = {
