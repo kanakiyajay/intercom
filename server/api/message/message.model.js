@@ -71,8 +71,10 @@ MessageSchema.post('save', function() {
       });
     } else if (message.created_by_model === 'Customer') {
       Customer.findById(message.created_by, function(err, cust) {
-        cust.conversations.push(conv._id);
-        cust.save();
+        if (cust.conversations.indexOf(conv._id) === -1) {
+          cust.conversations.push(conv._id);
+          cust.save();
+        }
       });
     }
   });
