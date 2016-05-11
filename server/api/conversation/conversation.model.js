@@ -39,10 +39,32 @@ ConversationSchema.post('save', function() {
   if (conv.poc_kind === 'Employee') {
     Employee.findById(conv.poc_id, function(err, emp) {
       if (!emp) return;
+
+      // Push to employee conversations
       if (emp.conversations.indexOf(conv._id) === -1) {
+        console.log('Push Conversation', conv._id);
         emp.conversations.push(conv._id);
         emp.save();
       }
+
+      var isPresent = false;
+
+      for (var i = conv.stakeholders.length - 1; i >= 0; i--) {
+        if (conv.stakeholders[i]._id === emp._id) {
+          isPresent = true;
+          break;
+        }
+      }
+
+      if (!isPresent) {
+        // Push to stakeholders
+        conv.stakeholders.push({
+          model: 'Employee',
+          _id: emp._id
+        });
+      }
+
+      conv.save();
     });
   } else {
     // POC KIND IS WEBSITE
@@ -50,6 +72,7 @@ ConversationSchema.post('save', function() {
   }
 
   Customer.findById(conv.customer_id, function(err, cust) {
+    // Push to customer conversations
     if (cust.conversations.indexOf(conv._id) === -1) {
       cust.conversations.push(conv._id);
       cust.save();

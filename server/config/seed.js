@@ -19,6 +19,7 @@ var Conversation = require('../api/conversation/conversation.model');
 var Client = require('../api/client/client.model');
 var clientId = mongoose.Types.ObjectId();
 var custId = mongoose.Types.ObjectId();
+var empId = mongoose.Types.ObjectId();
 
 function init(cb) {
   async.parallel([
@@ -38,7 +39,8 @@ var seedJson = {
     url: 'http://jquer.in/',
     profile_pic: 'http://jquer.in/favicons/favicon.ico',
     name: 'jQuer.in',
-    app_id: 'rkgCVDuZ'
+    app_id: 'rkgCVDuZ',
+    primary: empId
   },
   emplo1: {
     client_id: clientId,
@@ -48,6 +50,7 @@ var seedJson = {
     password: 'test'
   },
   emplo2: {
+    _id: empId,
     client_id: clientId,
     provider: 'local',
     role: 'admin',

@@ -23,16 +23,14 @@ exports.create = function(req, res) {
           select: '-salt -hashedPassword -conversations'
         }
       }], function(err, convs) {
-
         if (err) { return handleError(res, err); }
-
         // Also Update the Customer
         customer.save(function(err, cust) {
           if (err) { return handleError(res, err); }
           // TODO: Remove many params from this    
-          resp.client = req.client;
+          cust.client = req.client;
 
-          res.json(201, resp);
+          res.json(201, cust);
         });
       });
   } else {

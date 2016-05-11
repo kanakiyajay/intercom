@@ -55,14 +55,20 @@ exports.create = function(req, res) {
     }
 
     var custId = customers[0]._id;
+    console.log('req.client', req.client);
 
     if (!req.body.conversation_id) {
-      console.log('New Conversation');
       Conversation.create({
         client_id: req.client._id,
         poc_kind: 'Employee',
-        poc_id: req.client.primary
+        poc_id: req.client.primary,
+        customer_id: custId
       }, function(err, conv) {
+        if (err) {
+          console.error('New Conversation Create', err);
+        }
+        console.log('New Conversation', conv);
+
         pushMsgToConversation(conv._id, custId, req, res);  
       });
     } else {
@@ -105,7 +111,6 @@ function pushMsgToConversation(convId, custId, req, res) {
 
   Message.create(mesg, function(err, message) {
     if (err) handleError(res, err);
-    var mesgId = message._id;
     res.json(201, message);
   });
 }
