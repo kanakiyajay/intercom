@@ -28,17 +28,20 @@ exports.create = function(req, res) {
         customer.save(function(err, cust) {
           if (err) { return handleError(res, err); }
           // TODO: Remove many params from this    
-          cust.client = req.client;
+          var resp = cust.toObject();
+          resp.client = req.client;
 
-          res.json(201, cust);
+          res.json(201, resp);
         });
       });
   } else {
     console.log('Customer has no conversations');
     customer.save(function(err, cust) {
       if (err) { return handleError(res, err); }
-      cust.client = req.client;
-      res.json(201, cust);
+      var resp = cust.toObject();
+      resp.client = req.client;
+
+      res.json(201, resp);
     });
   }
 };
