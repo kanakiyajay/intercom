@@ -1,47 +1,53 @@
-<section class="content-wrapper">
-  <section class="content-header">
-    <h1>
-      Conversations
-      <!-- TODO: Show unread messages -->
-      <small>13 new messages</small>
-    </h1>
-    <ol class="breadcrumb">
-      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">Conversations</li>
-    </ol>
-  </section>
-    
-  <section class="content">
-    <div class="row">
-      <div class="col-md-3">
-        <div class="box box-solid">
-          <div class="box-body no-padding">
-            <ul class="list-group">
-              <a class="list-group-item" ng-repeat="conversation in conversations" ng-click="redirectTo(conversation._id)" ng-class="{'active': isActive(conversation._id) }">
-                <div class="media">
-                  <div class="media-left">
-                    <img class="img-responsive" src="{{ conversation.customer.profile_pic }}">                   
-                  </div>
-                  <div class="media-body">
-                    <div class="col-md-9">
-                      <h4 class="list-group-item-heading">{{ conversation.customer.name }}</h4>
-                      <p class="list-group-item-text">{{ conversation.last_message.message }}</p>
+<div class="wrapper" ng-init="refresh()">
+  <div ng-include="'components/navbar/navbar.html'"></div>
+
+  <div ng-include="'components/sidebar/sidebar.html'"></div>
+
+  <section class="content-wrapper">
+    <section class="content-header">
+      <h1>
+        Conversations
+        <!-- TODO: Show unread messages -->
+        <small>13 new messages</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Conversations</li>
+      </ol>
+    </section>
+      
+    <section class="content">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="box box-solid">
+            <div class="box-body no-padding">
+              <ul class="list-group">
+                <a class="list-group-item" ng-repeat="conversation in conversations" ng-click="redirectTo(conversation._id)" ng-class="{'active': isActive(conversation._id) }">
+                  <div class="media">
+                    <div class="media-left">
+                      <img class="img-responsive" src="{{ conversation.customer_id.profile_pic }}">
                     </div>
-                    <div class="col-md-3">
-                      <button type="button" class="btn btn-default btn-xs" tooltip-placement="top" uib-tooltip="New Conversation" ng-click="newConversation(conversation.customer._id)">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                      </button>
+                    <div class="media-body">
+                      <div class="col-md-8">
+                        <h4 class="list-group-item-heading">{{ conversation.customer_id.name }}</h4>
+                        <p class="list-group-item-text">{{ getLast(conversation.messages).message }}</p>
+                      </div>
+                      <div class="col-md-4">
+                        <button type="button" class="btn btn-default btn-xs" tooltip-placement="top" uib-tooltip="New Conversation" ng-click="newConversation(conversation.customer_id._id, $event)">
+                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </a>
-            </ul>
+                </a>
+              </ul>
+            </div>
           </div>
         </div>
+        <div class="col-md-9">
+          <div ui-view></div>
+        </div>
       </div>
-      <div class="col-md-9">
-        <div ui-view></div>
-      </div>
-    </div>
+    </section>
   </section>
-</section>
+</div>

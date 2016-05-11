@@ -5,21 +5,43 @@ var mongoose = require('mongoose');
 var Conversation = require('./conversation.model');
 var Message = require('../message/message.model');
 var Customer = require('../customer/customer.model');
+var Employee = require('../employee/employee.model');
 var defaults = {
   limit: 20
 }
 
 // Get a list of conversations and its corresponsing messages
 exports.index = function(req, res) {
-  if (!req.body.conversations) {
-    return res.json(200, {});
-  }
-  
-  var limit = req.body.limit || defaults.limit;
-  var arr = req.body.conversations;
-  var queryArr = arr.map(function(id){ return mongoose.Types.ObjectId(id); })
+  Conversation
+    .find({
+      stakeholders: {
+        model: 'Employee',
+        _id: mongoose.Types.ObjectId(req.user._id)
+      }
+    })
+    .populate([{
+      path: 'messages',
+      options: {
+        limit: 20
+      }
+    }, {
+      path: 'customer_id'
+    }])
+    .sort({
+      updatedAt: -1
+    })
+    .exec(function(err, convs) {
+      res.json(200, convs);
+    });
+};
 
-  Message.aggregate([{
+function handleError(res, err) {
+  console.error(err);
+  return res.send(500, err);
+}
+
+/**
+ *  Message.aggregate([{
     "$match": {
       "conversation_id": {
         "$in": queryArr
@@ -60,9 +82,4 @@ exports.index = function(req, res) {
     });
     res.json(200, resp);    
   });
-};
-
-function handleError(res, err) {
-  console.error(err);
-  return res.send(500, err);
-}
+ */

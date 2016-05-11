@@ -44,7 +44,8 @@ exports.create = function(req, res) {
     Conversation.create({
       client_id: req.user.client_id,
       poc_kind: 'Employee',
-      poc_id: req.user._id
+      poc_id: req.user._id,
+      customer_id: req.body.customer_id
     }, function(err, conv) {
       handleMessage(conv._id, req, res);
     });

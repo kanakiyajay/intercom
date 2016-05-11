@@ -3,63 +3,66 @@
 angular.module('tpApp')
   .controller('MainCtrl', function ($scope, $http, Auth, Conversation, $state, $stateParams) {
     var user = Auth.getCurrentUser();
-    $scope.refresh = function() {      
+    $scope.refresh = function() {
+      console.log('MainCtrl', 'Refresh called');
       if (!user.$promise) { return;}
       user.$promise.then(function(user) {
-        Conversation.getConv({
-          conversations: user.conversations
-        }).$promise.then(function(resp) {
-          $scope.conversations = resp;
-          if ($scope.conversations.length) {
-            $state.go('conversation.details', {
-              conversationId: $scope.conversations[0]._id
-            });
-          }
+        Conversation
+          .getConv()
+          .$promise
+          .then(function(resp) {
+            $scope.conversations = resp;
+            if (!$stateParams.conversationId) {
+              if ($scope.conversations.length) {
+                $state.transitionTo('conversation.details', {
+                  conversationId: $scope.conversations[0]._id
+                });
+              }
+            }
         })
       });
+    };
 
-      console.log($stateParams);
-      // TODO: Do this everytime
-    }
+    $scope.getLast = function(arr) {
+      return arr[arr.length - 1];
+    };
 
     $scope.redirectTo = function(convId) {
-      $state.go('conversation.details', {
+      console.log('MainCtrl', 'Redirect To', convId);
+      $state.transitionTo('conversation.details', {
         conversationId: convId
       });
-    }
+    };
 
     $scope.isActive = function(convId) {
       return $state.params.conversationId === convId;
-    }
+    };
 
-    $scope.newConversation = function(custId) {
-      $state.go('conversation.new', {
+    $scope.newConversation = function(custId, e) {
+      console.log('new Conversation', custId);
+      $state.transitionTo('conversation.new', {
         customerId: custId
       });
-    }
+      e.stopPropagation();
+    };
 
   });
 
 angular.module('tpApp')
-  .controller('ConversationCtrl', function ($scope, $http, Auth, $stateParams, Message, $state) {
-
-    if ($stateParams.conversationId) {
-      $scope.convId = $stateParams.conversationId;
-    } else {
-      $scope.custId = $stateParams.customerId;
-      $scope.convId = "new";
-    }
+  .controller('ConversationCtrl', function ($scope, $http, Auth, $state, $stateParams, Message) {
 
     $scope.messageRefresh = function() {
-      if ($scope.convId === "new") return;
-
-      Message.get({
-        conversation_id: $scope.convId
-      }).$promise.then(function(res) {
-        $scope.messages = res;
-      }, function(err) {
-        console.error(err);
-      });
+      console.log('ConversationCtrl', 'messageRefresh');
+      if ($stateParams.conversationId) {
+        $scope.convId = $stateParams.conversationId;
+        Message.get({
+          conversation_id: $scope.convId
+        }).$promise.then(function(res) {
+          $scope.messages = res;
+        }, function(err) {
+          console.error(err);
+        });
+      }
     };
 
     $scope.submitNewMessage = function(mesg) {
@@ -67,17 +70,16 @@ angular.module('tpApp')
         message: mesg
       };
 
-      if ($scope.isOldConversation()) {
+      if ($stateParams.conversationId) {
         oMesg.conversation_id = $scope.convId;
       } else {
-        // TODO: Attach customer id over here
+        oMesg.customer_id = $stateParams.customerId;        
       }
 
       Message.send(oMesg).$promise.then(function(res) {
-
         $scope.messageRefresh();
         $scope.emptyInput();
-        if ($scope.isOldConversation()) {
+        if ($stateParams.conversationId) {
           $scope.refresh();
         } else {
           console.log('new Conversation', res.conversation_id);
@@ -90,13 +92,6 @@ angular.module('tpApp')
       }, function(error) {
         console.error(error);
       });
-    };
-
-    // true means that convId already present
-    $scope.isOldConversation = function() {
-      if (!convId) return false;
-      if (convId === "new") return false;
-      return true;
     };
 
     $scope.emptyInput = function() {

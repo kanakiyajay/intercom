@@ -13,7 +13,6 @@ angular.module('tpApp')
     };
 
     $scope.newConversation = function(custId) {
-      console.log('go to new custId', custId);
       $state.go('conversation.new', {
         customerId: custId
       });

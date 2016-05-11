@@ -51,4 +51,18 @@ angular.module('tpApp', [
         }
       });
     });
+
+    $rootScope.$on('$stateChangeError',function(event, toState, toParams, fromState, fromParams){
+      console.error('$stateChangeError');
+      console.error(arguments);
+    });
+
+    $rootScope.$on('$stateChangeSuccess',function(event, toState, toParams, fromState, fromParams){
+      console.log('$stateChangeSuccess', toState.name, fromState);
+    });
+
+    $rootScope.$on('$stateNotFound',function(event, unfoundState, fromState, fromParams){
+      console.error('$stateNotFound '+unfoundState.to+'  - fired when a state cannot be found by its name.');
+      console.error(unfoundState, fromState, fromParams);
+    });
   });

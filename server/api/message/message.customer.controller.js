@@ -54,18 +54,19 @@ exports.create = function(req, res) {
       });
     }
 
+    var custId = customers[0]._id;
+
     if (!req.body.conversation_id) {
       console.log('New Conversation');
-      // TODO: Insert client id over here
       Conversation.create({
         client_id: req.client._id,
         poc_kind: 'Employee',
         poc_id: req.client.primary
       }, function(err, conv) {
-        pushMsgToConversation(conv._id, customers[0], req, res);  
+        pushMsgToConversation(conv._id, custId, req, res);  
       });
     } else {
-      pushMsgToConversation(req.body.conversation_id, customers[0], req, res);
+      pushMsgToConversation(req.body.conversation_id, custId, req, res);
     }
   });
 };
@@ -89,12 +90,12 @@ function handleError(res, err) {
   return res.send(500, err);
 }
 
-function pushMsgToConversation(convId, cust, req, res) {
+function pushMsgToConversation(convId, custId, req, res) {
   var mesg = {
     conversation_id: convId,
     message: req.body.message,
     type: 'c2e',
-    created_by: cust._id,
+    created_by: custId,
     created_by_model: 'Customer',
     status: 'unread',
     attachments: []

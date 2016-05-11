@@ -17,7 +17,7 @@ var mongoose = require('mongoose'),
  *    
  *********/
 var MessageSchema = new Schema({
-  conversation_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Conversation', index: true},
+  conversation_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Conversation', index: true, required: true},
   status: { type: String, enum: ['read', 'unread', 'deleted'], required: true, default: 'unread'},
   created_by_model: { type: String, enum: ['Customer', 'Employee', 'Client']}, // Required for dynamic refs
   created_by: { type: mongoose.Schema.Types.ObjectId, refPath: 'created_by_model'},

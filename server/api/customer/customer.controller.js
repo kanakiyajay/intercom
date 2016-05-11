@@ -29,8 +29,6 @@ exports.create = function(req, res) {
         // Also Update the Customer
         customer.save(function(err, cust) {
           if (err) { return handleError(res, err); }
-          var resp = cust.toObject();
-          
           // TODO: Remove many params from this    
           resp.client = req.client;
 

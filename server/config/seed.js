@@ -18,6 +18,7 @@ var Customer = require('../api/customer/customer.model');
 var Conversation = require('../api/conversation/conversation.model');
 var Client = require('../api/client/client.model');
 var clientId = mongoose.Types.ObjectId();
+var custId = mongoose.Types.ObjectId();
 
 function init(cb) {
   async.parallel([
@@ -74,6 +75,7 @@ var seedJson = {
     conversations: []
   },
   custo2: {
+    _id: custId,
     client_id: clientId,
     app_id: 'rkgCVDuZ',
     cust_id: '124',
@@ -104,7 +106,8 @@ var seedJson = {
   },
   conv: {
     client_id: clientId,
-    poc_kind: 'Employee'
+    poc_kind: 'Employee',
+    customer_id: custId
   }
 };
 

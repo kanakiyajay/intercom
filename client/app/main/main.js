@@ -5,7 +5,7 @@ angular.module('tpApp')
     $stateProvider
       .state('conversation', {
         url: '/',
-        templateUrl: 'app/main/main.html',
+        templateUrl: 'components/message/board.html',
         controller: 'MainCtrl'
       })
       .state('conversation.details', {
