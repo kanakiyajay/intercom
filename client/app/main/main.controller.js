@@ -17,7 +17,15 @@ angular.module('tpApp')
           }
         })
       });
+
+      console.log($stateParams);
       // TODO: Do this everytime
+    }
+
+    $scope.redirectTo = function(convId) {
+      $state.go('conversation.details', {
+        conversationId: convId
+      });
     }
 
     $scope.isActive = function(convId) {
@@ -33,26 +41,25 @@ angular.module('tpApp')
   });
 
 angular.module('tpApp')
-  .controller('ConversationCtrl', function ($scope, $http, Auth, $stateParams, Message) {
+  .controller('ConversationCtrl', function ($scope, $http, Auth, $stateParams, Message, $state) {
 
     if ($stateParams.conversationId) {
-      var convId = $stateParams.conversationId;
+      $scope.convId = $stateParams.conversationId;
     } else {
-      var custId = $stateParams.customerId;
-      var convId = "new";
+      $scope.custId = $stateParams.customerId;
+      $scope.convId = "new";
     }
 
     $scope.messageRefresh = function() {
-      if (!$scope.isCustomerAttached()) return;
+      if ($scope.convId === "new") return;
 
       Message.get({
-        conversation_id: convId
+        conversation_id: $scope.convId
       }).$promise.then(function(res) {
         $scope.messages = res;
-        $scope.convId = convId;
       }, function(err) {
         console.error(err);
-      })
+      });
     };
 
     $scope.submitNewMessage = function(mesg) {
@@ -60,17 +67,25 @@ angular.module('tpApp')
         message: mesg
       };
 
-      if ($scope.isCustomerAttached()) {
-        oMesg.conversation_id = convId;
+      if ($scope.isOldConversation()) {
+        oMesg.conversation_id = $scope.convId;
+      } else {
+        // TODO: Attach customer id over here
       }
 
       Message.send(oMesg).$promise.then(function(res) {
 
         $scope.messageRefresh();
         $scope.emptyInput();
-
-        if ($scope.isCustomerAttached()) {
+        if ($scope.isOldConversation()) {
           $scope.refresh();
+        } else {
+          console.log('new Conversation', res.conversation_id);
+          $state.go('conversation.details', {
+            conversationId: res.conversation_id
+          }).then(function(suc) {
+            $scope.refresh();
+          });
         }
       }, function(error) {
         console.error(error);
@@ -78,7 +93,7 @@ angular.module('tpApp')
     };
 
     // true means that convId already present
-    $scope.isCustomerAttached = function() {
+    $scope.isOldConversation = function() {
       if (!convId) return false;
       if (convId === "new") return false;
       return true;

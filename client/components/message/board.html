@@ -17,7 +17,7 @@
         <div class="box box-solid">
           <div class="box-body no-padding">
             <ul class="list-group">
-              <a class="list-group-item" ng-repeat="conversation in conversations" ng-click="messageRefresh(conversation._id)" ng-class="{'active': isActive(conversation._id) }">
+              <a class="list-group-item" ng-repeat="conversation in conversations" ng-click="redirectTo(conversation._id)" ng-class="{'active': isActive(conversation._id) }">
                 <div class="media">
                   <div class="media-left">
                     <img class="img-responsive" src="{{ conversation.customer.profile_pic }}">                   

@@ -27,7 +27,12 @@
 										<td>{{ customer.last_active_at }}</td>
 										<td>{{ customer.web_sessions }}</td>
 										<td>PUNE</td>
-										<td>{{ customer.conversations.length }}</td>
+										<td>
+											{{ customer.conversations.length }}
+											<button type="button" class="btn btn-sm btn-default" ng-click="newConversation(customer._id)">
+												<span class="glyphicon glyphicon-plus"></span>
+											</button>
+										</td>
 									</tr>
 								</tbody>
 							</table>
