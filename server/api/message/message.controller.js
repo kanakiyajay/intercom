@@ -83,7 +83,8 @@ exports.update = function(req, res) {
   Message.update({
     _id: {
       $in: ids
-    }
+    },
+    conversation_id: req.body.conversation_id
   }, {
     $set: {
       status: 'read'

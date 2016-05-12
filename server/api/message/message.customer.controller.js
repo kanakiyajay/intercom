@@ -77,16 +77,29 @@ exports.create = function(req, res) {
   });
 };
 
-// Updates an existing message in the DB.
+// req.body.ids contains a list of ids of messages needed to be marked as read
 exports.update = function(req, res) {
-  if(req.body._id) { delete req.body._id; }
-  Message.findById(req.params.id, function (err, message) {
+  var ids = req.body.ids;
+  if (!ids || !ids.length) {
+    return res.json(500, {
+
+    });
+  }
+
+  Message.update({
+    _id: {
+      $in: ids
+    },
+    conversation_id: req.body.conversation_id
+  }, {
+    $set: {
+      status: 'read'
+    }
+  }, function (err, number) {
+    console.log('Messages read', err, number);
     if (err) { return handleError(res, err); }
-    if(!message) { return res.send(404); }
-    var updated = _.merge(message, req.body);
-    updated.save(function (err) {
-      if (err) { return handleError(res, err); }
-      return res.json(200, message);
+    return res.json(200, {
+      status: 'done'
     });
   });
 };

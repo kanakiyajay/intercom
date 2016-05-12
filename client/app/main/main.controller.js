@@ -108,7 +108,8 @@ angular.module('tpApp')
 
     $scope.maskAsRead = function() {
       Message.postRead({
-        ids: getUnreadMessages()
+        ids: getUnreadMessages(),
+        conversation_id: $scope.messages[0].conversation_id
       }).$promise.then(function(err, les) {
         if (err) return console.error(err);
         else console.log(les);

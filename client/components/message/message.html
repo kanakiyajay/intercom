@@ -5,19 +5,29 @@
   <div class="box-body">
     <div class="direct-chat-messages">
       <div ng-repeat="message in messages | orderBy:'createdAt'" class="direct-chat-msg" ng-class="{'right': message.created_by_model === 'Customer'}">
-        <div class="direct-chat-info clearfix">
-          <span class="direct-chat-name pull-left" ng-show="message.created_by_model === 'Customer'">
+        <div class="direct-chat-info clearfix" ng-show="message.created_by_model === 'Customer'">
+          <span class="direct-chat-name pull-right">
             {{ message.created_by.name }}
           </span>
-          <span class="direct-chat-name pull-left" ng-show="message.created_by_model === 'Employee'">
+          <span class="direct-chat-timestamp pull-left">
+            {{ message.createdAt | timeAgo }}
+          </span>
+        </div>
+        <div class="direct-chat-info clearfix" ng-show="message.created_by_model === 'Employee'">
+          <span class="direct-chat-name pull-left">
             {{ currentUser.name }}
           </span>
-          <span class="direct-chat-timestamp pull-right"></span>
+          <span class="direct-chat-timestamp pull-right">
+            {{ message.createdAt | timeAgo }}
         </div>
+          </span>
         <!--  TODO: Angular fake image
         <img class="direct-chat-img" src="{{ message.created_by.profile_pic || '' }}" ng-show="message.created_by_model === 'Employee'">
         -->
         <div class="direct-chat-text">
+          <span class="chat-icon pull-left" ng-show="message.status === 'unread' && message.created_by_model === 'Customer'">
+            <span class="glyphicon glyphicon-time"></span>
+          </span>
           {{ message.message }}
         </div>
       </div>
