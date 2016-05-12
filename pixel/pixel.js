@@ -452,6 +452,35 @@ pixel.postMesssage = function(mesg, cb) {
   });
 }
 
+pixel.markAsRead = function(messages) {
+  var ids = [];
+  for (var i = messages.length - 1; i >= 0; i--) {
+    if (messages[i].created_by === 'Employer' && messages[i].status === 'unread') {
+      ids.push(messages[i]._id);
+    }
+  }
+
+  var url = pixel.constants.url.base + pixel.constants.url.message
+                 + '/' + pixel.constants.url.customer;
+
+  var convId = pixel.get('convId');
+
+  $.ajax({
+    url: url,
+    method: 'PUT',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify({
+      conversation_id: convId,
+      ids: ids
+    }),
+    success: pixel.noop,
+    error: function(err) {
+      pixel.logger(pixel.constants.messages.getCustFailed + ' '  + err, true);
+    }
+  })
+}
+
 pixel.addConversation = function() {
   // Automatically Enable a new message interface
   var elemId = pixel.constants.ids.list.single;
@@ -530,6 +559,10 @@ pixel.render = {
       pixel.elems.preMessage.hide();
     }
     $elem.html(html);
+    // After a delay, mark the messages as read
+    setTimeout(function() {
+      pixel.markAsRead(messages);
+    }, 1000)
   }
 }
 
