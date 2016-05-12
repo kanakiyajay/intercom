@@ -28,15 +28,16 @@
                       <img class="img-responsive" src="{{ conversation.customer_id.profile_pic }}">
                     </div>
                     <div class="media-body">
-                      <div class="col-md-8">
-                        <h4 class="list-group-item-heading">{{ conversation.customer_id.name }}</h4>
-                        <p class="list-group-item-text">{{ getLast(conversation.messages).message }}</p>
-                      </div>
-                      <div class="col-md-4">
-                        <button type="button" class="btn btn-default btn-xs" tooltip-placement="top" uib-tooltip="New Conversation" ng-click="newConversation(conversation.customer_id._id, $event)">
+                      <h4 class="list-group-item-heading">
+                        {{ conversation.customer_id.name }}
+                        <span type="button" class="btn btn-default btn-xs pull-right" tooltip-placement="top" uib-tooltip="New Conversation" ng-click="newConversation(conversation.customer_id._id, $event)">
                           <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                        </button>
-                      </div>
+                        </span>
+                      </h4>
+                      <p class="list-group-item-text">
+                        {{ getLast(conversation.messages).message }}
+                        <span class="badge pull-right">{{ getNumberUnread(conversation.messages) }}</span>
+                      </p>
                     </div>
                   </div>
                 </a>

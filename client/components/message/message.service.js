@@ -9,6 +9,9 @@ angular.module('tpApp')
       get: {
       	method: 'GET',
       	isArray: true
+      },
+      postRead: {
+        method: 'PUT'
       }
     });
   });

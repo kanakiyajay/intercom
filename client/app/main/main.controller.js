@@ -27,6 +27,16 @@ angular.module('tpApp')
       return arr[arr.length - 1];
     };
 
+    $scope.getNumberUnread = function(arr) {
+      var index = 0;
+      arr.forEach(function(msg) {
+        if (msg.status === 'unread' && msg.created_by !== user._id) {
+          index ++;
+        }
+      });
+      return index;
+    };
+
     $scope.redirectTo = function(convId) {
       console.log('MainCtrl', 'Redirect To', convId);
       $state.transitionTo('conversation.details', {
@@ -50,6 +60,7 @@ angular.module('tpApp')
 
 angular.module('tpApp')
   .controller('ConversationCtrl', function ($scope, $http, Auth, $state, $stateParams, Message) {
+    var user = Auth.getCurrentUser();
 
     $scope.messageRefresh = function() {
       console.log('ConversationCtrl', 'messageRefresh');
@@ -59,6 +70,7 @@ angular.module('tpApp')
           conversation_id: $scope.convId
         }).$promise.then(function(res) {
           $scope.messages = res;
+          $scope.maskAsRead();
         }, function(err) {
           console.error(err);
         });
@@ -94,7 +106,29 @@ angular.module('tpApp')
       });
     };
 
+    $scope.maskAsRead = function() {
+      Message.postRead({
+        ids: getUnreadMessages()
+      }).$promise.then(function(err, les) {
+        if (err) return console.error(err);
+        else console.log(les);
+      });
+    };
+
     $scope.emptyInput = function() {
       $scope.reply = '';
     };
+
+    function getUnreadMessages() {
+      var messages = $scope.messages;
+      var ids = [];
+      messages.forEach(function(mesg) {
+        console.log(mesg, user);
+        if (mesg.status === 'unread' && mesg.created_by._id !== user._id) {
+          ids.push(mesg._id);
+        }
+      });
+      return ids;
+    }
+
   });
